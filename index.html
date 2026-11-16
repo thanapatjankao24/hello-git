@@ -370,7 +370,7 @@ function toContents(input){
   if(out.length&&out[0].role!=='user')out.unshift({role:'user',parts:[{text:'(เริ่มคุย)'}]});
   return out;}
 function textOf(j){var c=j&&j.candidates&&j.candidates[0];var ps=(c&&c.content&&c.content.parts)||[];return ps.filter(function(p){return p.text&&!p.thought;}).map(function(p){return p.text;}).join('');}
-async function gem(body){var j=await call({op:'gemini',body:body});if(j&&j.error)throw err(j.error.code===429?'rate_limited':'error',j.error.message);return j;}
+async function gem(body){var j=await call({op:'gemini',body:body});try{window.ARB_LAST=j;}catch(e){}if(j&&j.error)throw err(j.error.code===429?'rate_limited':'error',j.error.message);return j;}
 async function sample(input,opts){
   opts=opts||{};var contents=toContents(input);var tools=opts.tools||null;
   var body={contents:contents,generationConfig:{temperature:0.7}};
@@ -1210,6 +1210,7 @@ function plain(t){return t.replace(/[*#_`>]/g,'').replace(/[\u{1F300}-\u{1FAFF}�
 function canSpeak(){return !!tts||!!window.speechSynthesis;}
 function capMsg(t){if(!$('cap').hidden)$('capTxt').textContent=t;}
 async function say(text){
+  if(text)showReply(text);
   if(!S.prof.nova)return;var p=plain(text);
   if(!canSpeak()){showReply(text);return;}
   capMsg('ARB กำลังพูด…');setTimeout(function(){if(!S.busy)capRest();},Math.max(2500,p.length*110));
@@ -1286,8 +1287,8 @@ async function ask(text){
   var c0=S.prof.cfg||{};var prompt=SYS+imRule()+(c0.callMe?'\n- เรียกผู้ใช้ว่า '+c0.callMe:'')+(c0.style?'\n- สไตล์การพูดที่ผู้ใช้ต้องการ: '+c0.style:'')+'\n\nสถานะ (JSON): '+JSON.stringify(stateForClaude())+(hist?'\n\nก่อนหน้า:\n'+hist:'')+'\n\nผู้ใช้พูดว่า: '+text;
   try{
     var res=await sample(prompt,{tools:tools(),cache:false,modelTier:'quick'});
-    var out=(res&&res.text)||'';S.chat.push({r:'u',t:text},{r:'a',t:out});S.chat=S.chat.slice(-12);S.busy=false;if(out)say(out);
-  }catch(e){if(e&&e.code==='not_granted')sampleOff=true;var fb=e&&e.code==='rate_limited'?'เรียกใช้บ่อยไป รอสักครู่นะ':'ขอโทษ ตอนนี้ตอบไม่ได้ ลองพูดใหม่อีกทีนะ';S.busy=false;say(fb);}
+    var out=(res&&res.text)||'';S.chat.push({r:'u',t:text},{r:'a',t:out});S.chat=S.chat.slice(-12);S.busy=false;say(out||'จัดการให้แล้ว 👍');
+  }catch(e){if(e&&e.code==='not_granted')sampleOff=true;var fb=e&&e.code==='rate_limited'?'เรียกใช้บ่อยไป รอสักครู่นะ':'ขอโทษ ตอนนี้ตอบไม่ได้ ('+String(e&&e.message||e).slice(0,120)+')';S.busy=false;say(fb);}
   S.busy=false;
 }
 $('cmd').addEventListener('submit',function(e){e.preventDefault();ask($('cmdIn').value);});
