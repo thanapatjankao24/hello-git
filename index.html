@@ -1193,7 +1193,7 @@ function renderNova(){
 $('novaBtn').onclick=function(){setNova(!S.prof.nova);};
 function capRest(){if(listening&&dictTarget==='cmd')$('capTxt').textContent='ฟังอยู่ · พูดได้เลย';else capIdle();}
 function capIdle(){if(listening&&dictTarget==='cmd')return;$('capTxt').textContent=S.busy?'กำลังคิด…':dict?'แตะตรงไหนก็ได้ เพื่อเริ่มฟัง':'แตะเพื่อพิมพ์สั่ง';}
-function startCmd(){if(!dict||listening)return;capMsg('กำลังเปิดไมค์…');dictTarget='cmd';vHeard='';userStopped=false;dict.start().catch(function(e){setListen(false);autoArmed=false;userStopped=true;if(e&&e.code==='not_granted'){dict=null;S.cmdOpen=true;renderNova();showReply('ไมค์ในแอปถูกปิดอยู่ แตะช่องพิมพ์แล้วกด 🎤 บนคีย์บอร์ดแทนได้');}});}
+function startCmd(){if(!dict||listening)return;capMsg('กำลังเปิดไมค์…');dictTarget='cmd';vHeard='';userStopped=false;dict.start().catch(function(e){setListen(false);autoArmed=false;userStopped=true;if(e&&e.code==='not_granted'){if(!dictWeb)dict=null;S.cmdOpen=true;renderNova();showReply(dictWeb?'ยังไม่ได้อนุญาตไมค์ · แตะปุ่ม 🎤 อีกครั้งแล้วกด “อนุญาต” (ถ้าไม่เด้ง: ตั้งค่า › Safari › ไมโครโฟน › อนุญาต)':'ไมค์ในแอปถูกปิดอยู่ แตะช่องพิมพ์แล้วกด 🎤 บนคีย์บอร์ดแทนได้');}else if(e&&e.code==='timeout'){showReply('ไมค์ยังไม่ทำงาน แตะปุ่ม 🎤 อีกครั้ง');}});}
 $('cap').onclick=function(){
   if(dict){if(listening&&dictTarget==='cmd'){userStopped=true;dict.stop().catch(function(){});}else{autoArmed=true;startCmd();}return;}
   S.cmdOpen=!S.cmdOpen;renderNova();if(S.cmdOpen)$('cmdIn').focus();
@@ -1294,8 +1294,8 @@ async function ask(text){
 $('cmd').addEventListener('submit',function(e){e.preventDefault();ask($('cmdIn').value);});
 function setListen(v){listening=v;$('cap').classList.toggle('listen',v);$('cap').setAttribute('aria-label',v?'หยุดฟัง':'แตะเพื่อให้ ARB ฟัง');if(v)$('capTxt').textContent='ฟังอยู่ · พูดได้เลย';else capIdle();}
 $('mic').onclick=function(){
-  if(!dict)return;if(listening){dict.stop().catch(function(){});return;}
-  dictTarget='cmd';vHeard='';stopTalk();heard='';dict.start().catch(function(e){setListen(false);if(e&&e.code==='not_granted'){dict=null;renderNova();}});
+  if(!dict){dict=webDict();if(dict){dictWeb=true;wireDict();}else return;}if(listening){dict.stop().catch(function(){});return;}
+  dictTarget='cmd';vHeard='';stopTalk();heard='';capMsg('กำลังเปิดไมค์…');dict.start().catch(function(e){setListen(false);var c=e&&e.code;showReply(c==='not_granted'?'Safari ยังไม่อนุญาตไมค์ · ไปที่ ตั้งค่า › แอป › Safari › ไมโครโฟน › อนุญาต แล้วแตะ 🎤 ใหม่':c==='timeout'?'ไมค์ยังไม่ตอบ แตะ 🎤 อีกครั้ง':'เปิดไมค์ไม่ได้ ('+String(e&&e.message||e)+')');});
 };
 /* iPhone fallback: browser speech recognition (Siri engine) shaped like the dictation capability */
 var dictWeb=false;
@@ -1305,9 +1305,9 @@ function webDict(){var SR=window.SpeechRecognition||window.webkitSpeechRecogniti
   return {start:function(){return new Promise(function(res,rej){var started=false;try{r=new SR();r.lang=(typeof enMode==='function'&&enMode())?'en-US':'th-TH';r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
       r.onstart=function(){started=true;emit(h.s,{state:'listening'});res();};
       r.onresult=function(e){var fin='',mid='';for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else mid+=t;}if(mid)emit(h.p,{text:mid});if(fin)emit(h.f,{text:fin});};
-      r.onerror=function(e){var c=e&&e.error;if(c==='not-allowed'||c==='service-not-allowed'||c==='audio-capture'){if(!started)rej(denied(c));else{dict=null;dictWeb=false;}}else if(!started)rej(new Error(c||'err'));};
+      r.onerror=function(e){var c=e&&e.error;if(c==='not-allowed'||c==='service-not-allowed'||c==='audio-capture'){if(!started)rej(denied(c));}else if(!started)rej(new Error(c||'err'));};
       r.onend=function(){emit(h.s,{state:'idle',reason:'stopped'});};
-      r.start();setTimeout(function(){if(!started){try{r.abort();}catch(e){}rej(denied('timeout'));}},2500);}catch(x){rej(denied(String(x&&x.message||x)));}});},
+      r.start();setTimeout(function(){if(!started){try{r.abort();}catch(e){}var te=new Error('timeout');te.code='timeout';rej(te);}},12000);}catch(x){rej(denied(String(x&&x.message||x)));}});},
     stop:function(){try{r&&r.stop();}catch(e){}return Promise.resolve();},
     onPartial:function(f){h.p.push(f);},onFinal:function(f){h.f.push(f);},onState:function(f){h.s.push(f);}};}
 /* iPhone: speech output only works after one speak() inside a tap — unlock it on the first touch */
