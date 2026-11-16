@@ -346,7 +346,7 @@ function err(code,msg){var e=new Error(msg||code);e.code=code;return e;}
 async function call(body){
   var p=pass();if(!p)throw err('not_granted','no pass');
   var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-arb-pass':p},body:JSON.stringify(body)});
-  if(r.status===401){try{localStorage.removeItem('arb:pass');}catch(e){}throw err('not_granted','bad pass');}
+  if(r.status===401){var jj=null;try{jj=await r.json();}catch(e){}try{localStorage.removeItem('arb:pass');}catch(e){}var ee=err('not_granted','bad pass');ee.info=jj||{};throw ee;}
   var j=null;try{j=await r.json();}catch(e){}
   if(r.status===429)throw err('rate_limited');
   if(!r.ok)throw err('error',(j&&(j.error&&(j.error.message||j.error)))||('HTTP '+r.status));
@@ -408,10 +408,10 @@ window.claude={use:async function(n){
 window.ARB_GATE=async function(){
   if(pass()){try{await call({op:'ping'});return true;}catch(e){if(e.code!=='not_granted')return true;}}
   return new Promise(function(res){
-    var d=document.createElement('div');d.id='gate';d.innerHTML='<div class="gate-in"><div style="font-size:44px">🗡️</div><div style="font-size:22px;font-weight:800;margin:8px 0 4px">ARB</div><div style="color:var(--mut);font-size:14px;margin-bottom:16px">ใส่รหัสผ่านของ Arm</div><input id="gateIn" type="password" inputmode="text" autocomplete="current-password" placeholder="รหัสผ่าน"><button type="button" class="btn" id="gateGo" style="width:100%;margin-top:12px">เข้าใช้งาน</button><div id="gateErr" style="color:var(--bad);font-size:13px;margin-top:10px;min-height:18px"></div></div>';
+    var d=document.createElement('div');d.id='gate';d.innerHTML='<div class="gate-in"><div style="font-size:44px">🗡️</div><div style="font-size:22px;font-weight:800;margin:8px 0 4px">ARB</div><div style="color:var(--mut);font-size:14px;margin-bottom:16px">ใส่รหัสผ่านของ Arm</div><input id="gateIn" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text" autocomplete="current-password" placeholder="รหัสผ่าน"><button type="button" class="btn" id="gateGo" style="width:100%;margin-top:12px">เข้าใช้งาน</button><div id="gateErr" style="color:var(--bad);font-size:13px;margin-top:10px;min-height:18px"></div></div>';
     document.body.appendChild(d);
     var go=async function(){var v=document.getElementById('gateIn').value.trim();if(!v)return;try{localStorage.setItem('arb:pass',v);}catch(e){}
-      try{await call({op:'ping'});d.remove();res(true);}catch(e){document.getElementById('gateErr').textContent=e.code==='not_granted'?'รหัสไม่ถูก ลองใหม่':'เชื่อมต่อไม่ได้ ลองใหม่';}};
+      try{await call({op:'ping'});d.remove();res(true);}catch(e){var inf=e.info||{};document.getElementById('gateErr').textContent=e.code!=='not_granted'?'เชื่อมต่อไม่ได้ ลองใหม่ ('+(e.message||'')+')':inf.error==='no_pass_set'?'ยังไม่ได้ตั้ง ARB_PASS ใน Supabase (หรือยังไม่ได้กด Save)':'รหัสไม่ตรง: พิมพ์ '+(inf.len||0)+' ตัว แต่รหัสที่ตั้งไว้มี '+(inf.want||'?')+' ตัว';}};
     document.getElementById('gateGo').onclick=go;document.getElementById('gateIn').onkeydown=function(e){if(e.key==='Enter')go();};
   });};
 })();
