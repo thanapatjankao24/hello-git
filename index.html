@@ -345,7 +345,7 @@ function pass(){try{return localStorage.getItem('arb:pass')||'';}catch(e){return
 function err(code,msg){var e=new Error(msg||code);e.code=code;return e;}
 async function call(body){
   var p=pass();if(!p)throw err('not_granted','no pass');
-  var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-arb-pass':p},body:JSON.stringify(body)});
+  var r;try{r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-arb-pass':p},body:JSON.stringify(body),signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(45000):undefined});}catch(fe){throw err('error','เชื่อมต่อช้าหรือหลุด ลองใหม่อีกครั้ง');}
   if(r.status===401){var jj=null;try{jj=await r.json();}catch(e){}try{localStorage.removeItem('arb:pass');}catch(e){}var ee=err('not_granted','bad pass');ee.info=jj||{};throw ee;}
   var j=null;try{j=await r.json();}catch(e){}
   if(r.status===429)throw err('rate_limited');
