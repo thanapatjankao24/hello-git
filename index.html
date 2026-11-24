@@ -50,6 +50,97 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .bf-sk{height:76px;border-radius:18px;background:linear-gradient(90deg,var(--card),#1B1C20,var(--card));background-size:200% 100%;animation:bfsk 1.2s infinite;margin-bottom:10px}@keyframes bfsk{to{background-position:-200% 0}}
 .bf-note{font-size:11px;color:var(--mut);margin-top:8px}
 #gate{position:fixed;inset:0;z-index:9999;background:#0A0A0C;display:grid;place-items:center;padding:24px}.gate-in{width:100%;max-width:340px;text-align:center}#gate input{width:100%;min-height:52px;border-radius:16px;border:1px solid var(--line2);background:var(--card);color:var(--txt);font-size:17px;padding:0 16px;text-align:center}
+/* ===== ARB Path (lesson path, XP, streak, hearts) ===== */
+.dz-stats{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:2px 0 12px}
+.dz-st{display:flex;align-items:center;gap:5px;font-weight:800;font-size:15px;min-height:40px;padding:0 10px;border-radius:12px;background:transparent;border:none;color:var(--txt);cursor:pointer}
+.dz-st.fire{color:#FF9F43}.dz-st.gem{color:#5CC8FF}.dz-st.heart{color:#FF5A6E}.dz-st.xp{color:#FFD24A}
+.dz-st.fire.off{color:var(--mut)}
+.dz-flag{font-size:22px}
+.dz-quest{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:14px}
+.dz-quest .ic{font-size:28px}
+.dz-quest b{font-size:14px}
+.dz-bar{height:14px;border-radius:7px;background:#25272D;overflow:hidden;margin-top:6px;position:relative}
+.dz-bar i{display:block;height:100%;border-radius:7px;background:#FFD24A;transition:width .5s}
+.dz-bar span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:800;color:#5A4500}
+.dz-unit{border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin:6px 0 18px;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.dz-unit .t{flex:1}.dz-unit small{display:block;font-size:12px;font-weight:700;opacity:.85;letter-spacing:.3px}
+.dz-unit h3{margin:2px 0 0;font-size:19px;font-weight:800;line-height:1.3}
+.dz-guide{min-height:44px;padding:0 12px;border-radius:14px;border:2px solid rgba(255,255,255,.45);background:transparent;color:#fff;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.dz-path{position:relative;display:flex;flex-direction:column;align-items:center;gap:46px;padding:60px 0 28px}
+.dz-nw{position:relative;display:flex;justify-content:center;width:100%}
+.dz-node{width:72px;height:66px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;font-size:28px;position:relative;
+  background:var(--nc,#3A3D45);box-shadow:0 7px 0 var(--ns,#24262B);transition:transform .08s,box-shadow .08s;color:#fff}
+.dz-node:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ns,#24262B)}
+.dz-node.lock{--nc:#33363D;--ns:#24262B;color:#5C606A;cursor:default}
+.dz-node.done{--nc:#D9A23A;--ns:#8F6418}
+.dz-node.chest,.dz-node.chest.lock{background:transparent;box-shadow:none;font-size:46px;width:80px;filter:grayscale(1) brightness(.6)}
+.dz-node.chest.open{filter:none}.dz-node.chest.cur{filter:none;animation:dzbob 1.6s ease-in-out infinite}
+.dz-ring{position:absolute;width:92px;height:86px;border-radius:50%;border:6px solid #2B2E35;top:-10px;left:50%;transform:translateX(-50%);pointer-events:none}
+.dz-ring i{position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:var(--uc);border-right-color:var(--uc);transform:rotate(var(--rot,0deg))}
+.dz-tip{position:absolute;top:-52px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--line2);color:var(--uc);font-weight:800;font-size:15px;padding:8px 14px;border-radius:12px;white-space:nowrap;animation:dzbob 1.6s ease-in-out infinite;z-index:2}
+.dz-tip:after{content:"";position:absolute;bottom:-8px;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:var(--line2);border-bottom:0}
+@keyframes dzbob{50%{transform:translateX(-50%) translateY(-5px)}}
+.dz-node.chest.cur{animation:dzbob2 1.6s ease-in-out infinite}@keyframes dzbob2{50%{transform:translateY(-5px)}}
+.dz-mascot{position:absolute;font-size:64px;pointer-events:none;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+.dz-div{display:flex;align-items:center;gap:10px;color:var(--mut);font-weight:700;font-size:14px;margin:10px 0 6px}
+.dz-div:before,.dz-div:after{content:"";flex:1;height:2px;background:var(--line)}
+.dz-pop{position:absolute;z-index:5;top:80px;left:50%;transform:translateX(-50%);width:min(300px,86vw);border-radius:18px;padding:16px;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.dz-pop h4{margin:0 0 4px;font-size:17px}.dz-pop p{margin:0 0 12px;font-size:14px;opacity:.9}
+.dz-pop button{width:100%;min-height:48px;border-radius:14px;border:none;background:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+/* lesson overlay */
+#duoL{position:fixed;inset:0;z-index:200;background:#101216;display:flex;flex-direction:column;color:var(--txt)}
+#duoL[hidden],#engTop[hidden]{display:none}
+.dl-top{display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 16px 10px}
+.dl-x{width:44px;height:44px;border:none;background:transparent;color:var(--mut);font-size:26px;cursor:pointer}
+.dl-prog{flex:1;height:16px;border-radius:8px;background:#2A2D34;overflow:hidden}
+.dl-prog i{display:block;height:100%;border-radius:8px;background:linear-gradient(#FFD86B,#D9A23A);transition:width .4s;box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+.dl-hearts{color:#FF5A6E;font-weight:800;font-size:17px;min-width:44px;text-align:right}
+.dl-body{flex:1;overflow:auto;padding:8px 18px 18px;max-width:560px;width:100%;margin:0 auto}
+.dl-kind{font-size:13px;font-weight:800;color:#C88CFF;letter-spacing:.4px;margin:6px 0 6px}
+.dl-q{font-size:22px;font-weight:800;line-height:1.35;margin:0 0 16px}
+.dl-say{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
+.dl-av{font-size:48px;line-height:1}
+.dl-bub{border:2px solid var(--line2);border-radius:16px;padding:12px 14px;font-size:17px;line-height:1.5;position:relative;flex:1}
+.dl-spk{display:flex;gap:12px;justify-content:center;margin:10px 0 22px}
+.dl-spk button{width:96px;height:96px;border-radius:24px;border:none;background:#3BA5F5;box-shadow:0 6px 0 #1F72B5;color:#fff;font-size:40px;cursor:pointer}
+.dl-spk button.slow{width:64px;height:64px;font-size:26px;align-self:flex-end;border-radius:18px}
+.dl-ans{min-height:64px;border-bottom:2px solid var(--line2);display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;margin-bottom:22px;align-content:flex-start}
+.dl-ans.two{border-top:2px solid var(--line2)}
+.dl-bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.dl-w{min-height:46px;padding:0 14px;border-radius:13px;border:2px solid var(--line2);background:var(--card);color:var(--txt);font-size:17px;font-weight:600;cursor:pointer;box-shadow:0 3px 0 var(--line2)}
+.dl-w.used{visibility:hidden}
+.dl-ch{display:flex;flex-direction:column;gap:10px}
+.dl-c{min-height:56px;border-radius:15px;border:2px solid var(--line2);background:transparent;color:var(--txt);font-size:17px;font-weight:600;text-align:left;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:0 3px 0 var(--line2)}
+.dl-c .n{width:28px;height:28px;border-radius:8px;border:2px solid var(--line2);display:grid;place-items:center;font-size:13px;color:var(--mut);flex:none}
+.dl-c.sel{border-color:#3BA5F5;background:#10263A;box-shadow:0 3px 0 #1F72B5;color:#8FD0FF}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dl-grid .dl-c{justify-content:center;text-align:center}
+.dl-c.ok{border-color:#3E8E41;background:#11240F;color:#9BE28E;box-shadow:none;opacity:.55}
+.dl-c.badm{border-color:#E05555;background:#2A1213;color:#FF9A9A}
+.dl-mic{width:100%;min-height:72px;border-radius:18px;border:2px solid var(--line2);background:var(--card);color:#3BA5F5;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 var(--line2);display:flex;align-items:center;justify-content:center;gap:10px}
+.dl-mic.on{border-color:#3BA5F5;background:#10263A}
+.dl-heard{margin-top:12px;font-size:15px;color:var(--sub);min-height:22px;text-align:center}
+.dl-foot{padding:14px 18px max(18px,env(safe-area-inset-bottom));border-top:2px solid #1D2026;background:#101216}
+.dl-foot.ok{background:#16300F;border-color:transparent}.dl-foot.bad{background:#3A1414;border-color:transparent}
+.dl-fb{max-width:560px;margin:0 auto 12px;display:none}
+.dl-foot.ok .dl-fb,.dl-foot.bad .dl-fb{display:block}
+.dl-fb b{font-size:20px;display:block;margin-bottom:4px}
+.dl-foot.ok .dl-fb b{color:#8EE06C}.dl-foot.bad .dl-fb b{color:#FF7B7B}
+.dl-fb div{font-size:15px;line-height:1.5}.dl-foot.ok .dl-fb div{color:#8EE06C}.dl-foot.bad .dl-fb div{color:#FF9A9A}
+.dl-row{display:flex;gap:10px;max-width:560px;margin:0 auto}
+.dl-btn{flex:1;min-height:54px;border-radius:16px;border:none;font-size:16px;font-weight:800;letter-spacing:.3px;cursor:pointer;background:#58A8F0;color:#08243B;box-shadow:0 5px 0 #2C78C0}
+.dl-btn:disabled{background:#2A2D34;color:#5C606A;box-shadow:none;cursor:default}
+.dl-btn.ghost{flex:0 0 auto;padding:0 16px;background:transparent;color:var(--mut);box-shadow:none;border:2px solid var(--line2)}
+.dl-foot.ok .dl-btn{background:#6CC24A;color:#0D2606;box-shadow:0 5px 0 #3F8A22}
+.dl-foot.bad .dl-btn{background:#FF5A5A;color:#3A0909;box-shadow:0 5px 0 #B32828}
+.dl-end{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:6vh}
+.dl-end .big{font-size:84px}
+.dl-end h2{font-size:26px;margin:10px 0 4px;color:#FFD24A}
+.dl-tiles{display:flex;gap:10px;margin:22px 0;width:100%}
+.dl-tile{flex:1;border-radius:16px;border:2px solid var(--c);overflow:hidden}
+.dl-tile small{display:block;background:var(--c);color:#111;font-weight:800;font-size:12px;padding:5px}
+.dl-tile b{display:block;padding:12px 4px;font-size:20px;color:var(--c)}
+@media (prefers-reduced-motion:reduce){.dz-tip,.dz-node.chest.cur{animation:none}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .k{font-size:12px;color:var(--mut)}
@@ -182,11 +273,11 @@ nav .nb[aria-current="page"]{color:var(--acc);font-weight:600}
 </section>
 
 <section class="view" id="v-eng" hidden>
-  <div class="card" style="display:flex;align-items:center;gap:14px;padding:14px">
+  <div class="card" id="engTop" style="display:flex;align-items:center;gap:14px;padding:14px">
     <div style="flex:1"><div class="k">ฝึกวันนี้</div><div class="big"><span id="engMin">0</span><span style="font-size:14px;color:var(--mut)">/30 นาที</span></div></div>
     <div class="seg" role="group" aria-label="ภาษา"><button type="button" id="lEN" aria-pressed="true">🇬🇧 อังกฤษ</button><button type="button" id="lES" aria-pressed="false">🇪🇸 สเปน</button></div>
   </div>
-  <div class="seg" role="tablist" aria-label="โหมดฝึก"><button type="button" role="tab" id="eCard" aria-selected="true">คำศัพท์</button><button type="button" role="tab" id="eQuiz" aria-selected="false">ทดสอบ</button><button type="button" role="tab" id="eChat" aria-selected="false">คุยกับเพื่อน</button></div>
+  <div class="seg" role="tablist" aria-label="โหมดฝึก" style="margin-bottom:12px"><button type="button" role="tab" id="eQuiz" aria-selected="true">🗺️ เส้นทาง</button><button type="button" role="tab" id="eCard" aria-selected="false">คำศัพท์</button><button type="button" role="tab" id="eChat" aria-selected="false">คุยกับเพื่อน</button></div>
   <div id="engBody"></div>
   <div id="chatBox" hidden>
     <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px 14px">
@@ -467,7 +558,7 @@ function schedFor(d){
   (c.custom||[]).forEach(function(it){if(!it.days||!it.days.length||it.days.indexOf(wd)>=0)out.push({id:it.id,time:it.time,title:it.title,p:it.p||2,note:it.days&&it.days.length?'ทุก '+it.days.map(function(k){return DAYN[k];}).join(' '):'ทุกวัน'});});
   return out;
 }
-var S={now:new Date(),key:'',day:null,week:{},view:'today',showAll:false,news:'tech',eMode:'card',cards:null,ci:0,flipped:false,qi:0,picked:null,
+var S={now:new Date(),key:'',day:null,week:{},view:'today',showAll:false,news:'tech',eMode:'quiz',cards:null,ci:0,flipped:false,qi:0,picked:null,
   prof:{nova:true,stats:{},autos:{brief:true,lunch:true,gym:true,review:true,phone:true,weekly:true},cfg:{},hist:[],requests:[],safe:false},busy:false,chat:[]};
 S.key=dkey(S.now);
 function emptyDay(){return {done:{},extra:[],sleep:null,eng:0,gym:false,bed:null,alarm:null,food:[]};}
@@ -884,6 +975,7 @@ function renderEng(){
   $('lEN').setAttribute('aria-pressed',S.lang==='en');$('lES').setAttribute('aria-pressed',S.lang==='es');
   ['card','quiz','chat'].forEach(function(m){$('e'+m[0].toUpperCase()+m.slice(1)).setAttribute('aria-selected',S.eMode===m);});
   $('chatBox').hidden=S.eMode!=='chat';$('engBody').hidden=S.eMode==='chat';$('engNew').hidden=S.eMode==='chat';
+  $('engTop').hidden=S.eMode==='quiz';if(S.eMode==='quiz'){$('engNew').hidden=true;$('engNote').textContent='';renderPath();return;}
   if(S.eMode==='chat'){renderChat();return;}
   if(S.eMode==='card'){
     var cs=cards(),i=Math.min(S.ci,cs.length-1),c=cs[i],F=S.flipped;var BOXN=['','ใหม่','เริ่มจำ','จำได้','แม่น','เชี่ยวชาญ'],srcN={news:'📰 จากข่าว',nova:'✨ ARB',base:'',chat:'💬 จากแชต'};
@@ -903,6 +995,203 @@ function renderEng(){
     var n=$('qNext');if(n)n.onclick=function(){S.qi++;S.picked=null;renderEng();};
   }
 }
+/* ===== ARB Path: lesson path with XP, streak, hearts, gems ===== */
+var DUO_UNITS={
+ en:[
+  {t:'ทักทายที่ทำงาน',c:'#2FA36B',s:'#1D6E47',m:'🧑‍💼',
+   s1:[['Good morning, everyone.','อรุณสวัสดิ์ทุกคน'],['Nice to meet you.','ยินดีที่ได้รู้จัก'],['I am a new intern.','ผมเป็นเด็กฝึกงานคนใหม่'],['How are you today?','วันนี้เป็นยังไงบ้าง'],['I work in the IT team.','ผมทำงานในทีมไอที'],['See you tomorrow.','เจอกันพรุ่งนี้'],['Thank you for your help.','ขอบคุณที่ช่วยนะครับ'],['Can I ask you a question?','ขอถามอะไรหน่อยได้ไหม']],
+   w:[['intern','เด็กฝึกงาน'],['team','ทีม'],['manager','หัวหน้า'],['colleague','เพื่อนร่วมงาน'],['office','สำนักงาน'],['welcome','ยินดีต้อนรับ']]},
+  {t:'ประชุมและรายงาน',c:'#7B5CF0',s:'#4E36B0',m:'📊',
+   s1:[['The meeting starts at nine.','ประชุมเริ่มเก้าโมง'],['I will send the report today.','ผมจะส่งรายงานวันนี้'],['Please check this report.','ช่วยตรวจรายงานนี้หน่อย'],['The deadline is on Friday.','กำหนดส่งคือวันศุกร์'],['Can you explain it again?','อธิบายอีกครั้งได้ไหม'],['I have finished the first part.','ผมทำส่วนแรกเสร็จแล้ว'],['Sales went up this month.','ยอดขายเดือนนี้เพิ่มขึ้น'],['Let me show you the chart.','ขอโชว์กราฟให้ดูนะครับ']],
+   w:[['meeting','การประชุม'],['report','รายงาน'],['deadline','กำหนดส่ง'],['chart','กราฟ'],['explain','อธิบาย'],['finish','ทำเสร็จ']]},
+  {t:'คอมพิวเตอร์และ SQL',c:'#2F8FE0',s:'#1C5E9C',m:'💻',
+   s1:[['The query is too slow.','คิวรีช้าเกินไป'],['I need access to the database.','ผมต้องการสิทธิ์เข้าฐานข้อมูล'],['This table has many rows.','ตารางนี้มีหลายแถว'],['The system is down.','ระบบล่ม'],['Please restart your computer.','ช่วยรีสตาร์ทคอมหน่อย'],['I found a bug in the code.','ผมเจอบั๊กในโค้ด'],['The data is not correct.','ข้อมูลไม่ถูกต้อง'],['Save the file before you close it.','บันทึกไฟล์ก่อนปิด']],
+   w:[['database','ฐานข้อมูล'],['query','คำสั่งค้นข้อมูล'],['table','ตาราง'],['column','คอลัมน์'],['bug','ข้อผิดพลาดในโปรแกรม'],['access','สิทธิ์เข้าใช้']]},
+  {t:'อีเมลและแชตงาน',c:'#E0662F',s:'#9C401A',m:'📧',
+   s1:[['I am writing to ask about the project.','ผมเขียนมาเพื่อสอบถามเรื่องโปรเจกต์'],['Please find the file attached.','แนบไฟล์มาให้แล้วครับ'],['Sorry for the late reply.','ขอโทษที่ตอบช้า'],['Could you send me the details?','ช่วยส่งรายละเอียดมาได้ไหม'],['I will get back to you soon.','เดี๋ยวจะรีบตอบกลับนะครับ'],['Thanks for the update.','ขอบคุณสำหรับข้อมูลล่าสุด'],['Let me know if you have questions.','ถ้ามีคำถามบอกได้เลย'],['Best regards.','ขอแสดงความนับถือ']],
+   w:[['attach','แนบ'],['reply','ตอบกลับ'],['details','รายละเอียด'],['update','ข้อมูลล่าสุด'],['request','คำขอ'],['urgent','ด่วน']]},
+  {t:'ชีวิตประจำวัน',c:'#D9A23A',s:'#8F6418',m:'🍜',
+   s1:[['I wake up at six.','ผมตื่นหกโมง'],['I go to the gym after work.','ผมไปยิมหลังเลิกงาน'],['What do you want for lunch?','กินอะไรดีมื้อเที่ยง'],['I am a little tired today.','วันนี้เหนื่อยนิดหน่อย'],['I like playing games.','ผมชอบเล่นเกม'],['It is very hot today.','วันนี้ร้อนมาก'],['I go to bed late.','ผมเข้านอนดึก'],['Let us grab a coffee.','ไปหากาแฟกินกัน']],
+   w:[['tired','เหนื่อย'],['lunch','มื้อเที่ยง'],['weekend','วันหยุดสุดสัปดาห์'],['early','เช้า/เร็ว'],['late','สาย/ดึก'],['busy','ยุ่ง']]}
+ ],
+ es:[
+  {t:'ทักทายเบื้องต้น',c:'#E0662F',s:'#9C401A',m:'👋',
+   s1:[['Hola, buenos días.','สวัสดี อรุณสวัสดิ์'],['Me llamo Arm.','ฉันชื่ออาร์ม'],['Mucho gusto.','ยินดีที่ได้รู้จัก'],['¿Cómo estás?','สบายดีไหม'],['Estoy bien, gracias.','สบายดี ขอบคุณ'],['Soy de Tailandia.','ฉันมาจากประเทศไทย'],['Hasta mañana.','เจอกันพรุ่งนี้'],['Soy estudiante.','ฉันเป็นนักศึกษา']],
+   w:[['hola','สวัสดี'],['gracias','ขอบคุณ'],['adiós','ลาก่อน'],['amigo','เพื่อน'],['sí','ใช่'],['no','ไม่']]},
+  {t:'อาหารและคาเฟ่',c:'#2FA36B',s:'#1D6E47',m:'☕',
+   s1:[['Quiero un café.','ฉันอยากได้กาแฟหนึ่งแก้ว'],['La cuenta, por favor.','ขอบิลด้วย'],['Tengo hambre.','ฉันหิว'],['El agua, por favor.','ขอน้ำเปล่า'],['Me gusta la comida tailandesa.','ฉันชอบอาหารไทย'],['¿Cuánto cuesta?','ราคาเท่าไหร่'],['Está muy rico.','อร่อยมาก'],['Una mesa para dos.','โต๊ะสำหรับสองคน']],
+   w:[['café','กาแฟ'],['agua','น้ำ'],['comida','อาหาร'],['cuenta','บิล'],['rico','อร่อย'],['mesa','โต๊ะ']]}
+ ]};
+/* node plan per unit: type, icon */
+var DUO_PLAN=[['lesson','★'],['lesson','★'],['listen','🎧'],['chest','🎁'],['practice','🏋️'],['speak','🎤'],['lesson','★'],['trophy','🏆']];
+var DUO_OFF=[0,-52,-78,-52,0,52,78,52];
+var D={xp:0,gems:500,hearts:5,hAt:0,streak:0,last:'',done:{},days:{}};
+var DL=null;
+function duoLang(){return S.lang==='es'?'es':'en';}
+function duoSave(){writeDoc('duo',D);}
+function duoToday(){return D.days[S.key]||(D.days[S.key]={xp:0,lessons:0,perfect:0});}
+function duoRefill(){var now=Date.now();if(D.hearts>=5){D.hAt=now;return;}var n=Math.floor((now-(D.hAt||now))/1800000);if(n>0){D.hearts=Math.min(5,D.hearts+n);D.hAt=now;}}
+function duoStreakNow(){if(!D.last)return 0;var y=dkey(addDays(S.now,-1));return (D.last===S.key||D.last===y)?D.streak:0;}
+function nid(l,u,i){return l+':'+u+':'+i;}
+function duoCurrent(l){var U=DUO_UNITS[l];for(var u=0;u<U.length;u++)for(var i=0;i<DUO_PLAN.length;i++)if(!D.done[nid(l,u,i)])return {u:u,i:i};return null;}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a,n){return shuffle(a).slice(0,n);}
+function toks(s){return s.replace(/[.,!?¿¡]/g,'').split(/\s+/).filter(Boolean);}
+function norm(s){return String(s||'').toLowerCase().replace(/[.,!?¿¡'’]/g,'').replace(/\s+/g,' ').trim();}
+
+function renderPath(){
+  var l=duoLang(),U=DUO_UNITS[l];duoRefill();
+  var cur=duoCurrent(l),td=duoToday(),st=duoStreakNow();
+  var h='<div class="dz-stats"><button type="button" class="dz-st" id="dzLang" aria-label="สลับภาษา"><span class="dz-flag">'+(l==='es'?'🇪🇸':'🇬🇧')+'</span>'+(l==='es'?'ES':'EN')+'</button>'+
+    '<span class="dz-st fire'+(td.lessons?'':' off')+'" title="สตรีค">🔥 '+st+'</span><span class="dz-st gem" title="เพชร">💎 '+D.gems+'</span>'+
+    '<button type="button" class="dz-st heart" id="dzHeart" title="หัวใจ">❤️ '+D.hearts+'</button></div>';
+  var q=Math.min(10,td.xp);
+  h+='<div class="dz-quest"><span class="ic" aria-hidden="true">⚡</span><div style="flex:1"><b>ภารกิจวันนี้ · สะสม 10 XP</b><div class="dz-bar"><i style="width:'+(q*10)+'%"></i><span>'+q+' / 10</span></div></div><span style="font-size:28px" aria-hidden="true">'+(q>=10?'🎉':'🧰')+'</span></div>';
+  U.forEach(function(un,u){
+    h+='<div class="dz-unit" style="background:'+un.c+'"><div class="t"><small>ส่วนที่ 1 · หน่วยที่ '+(u+1)+'</small><h3>'+esc(un.t)+'</h3></div><button type="button" class="dz-guide" data-guide="'+u+'">📘 คู่มือ</button></div><div class="dz-path">';
+    DUO_PLAN.forEach(function(p,i){
+      var id=nid(l,u,i),done=!!D.done[id],isCur=cur&&cur.u===u&&cur.i===i,lock=!done&&!isCur;
+      var cls='dz-node'+(p[0]==='chest'?' chest'+(done?' open':''):'')+(done&&p[0]!=='chest'?' done':'')+(lock?' lock':'')+(isCur?' cur':'');
+      var style='transform:translateX('+DUO_OFF[i]+'px);'+(isCur&&p[0]!=='chest'?'--nc:'+un.c+';--ns:'+un.s+';':'');
+      var icon=p[0]==='chest'?(done?'💰':'🎁'):(done&&p[0]!=='trophy'?'✓':p[1]);
+      h+='<div class="dz-nw" style="--uc:'+un.c+'"><div style="position:relative;'+style.replace(/--nc.*$/,'')+'">'+
+        (isCur&&p[0]!=='chest'?'<span class="dz-ring"><i style="--rot:'+(i*30)+'deg"></i></span><span class="dz-tip">เริ่มเลย</span>':'')+
+        '<button type="button" class="'+cls+'" style="'+(isCur&&p[0]!=='chest'?'--nc:'+un.c+';--ns:'+un.s:'')+'" data-node="'+u+','+i+'" aria-label="'+esc(un.t)+' บทที่ '+(i+1)+(done?' (ผ่านแล้ว)':lock?' (ล็อก)':'')+'"'+(lock?' aria-disabled="true"':'')+'>'+icon+'</button></div>'+
+        (i===2?'<span class="dz-mascot" style="right:12%;top:-10px" aria-hidden="true">'+un.m+'</span>':'')+'</div>';
+    });
+    h+='</div>';
+    if(u<U.length-1)h+='<div class="dz-div">หน่วยถัดไป</div>';
+  });
+  $('engBody').innerHTML=h;
+  $('dzLang').onclick=function(){setLang(l==='es'?'en':'es');S.eMode='quiz';renderEng();};
+  $('dzHeart').onclick=function(){if(D.hearts>=5){toastD('หัวใจเต็มแล้ว ❤️');return;}if(D.gems>=50){D.gems-=50;D.hearts=5;D.hAt=Date.now();duoSave();renderPath();toastD('เติมหัวใจเต็มแล้ว (−50 💎)');}else toastD('หัวใจจะเพิ่ม 1 ดวงทุก 30 นาที');};
+  $('engBody').querySelectorAll('[data-guide]').forEach(function(b){b.onclick=function(){duoGuide(+b.dataset.guide);};});
+  $('engBody').querySelectorAll('[data-node]').forEach(function(b){b.onclick=function(){var a=b.dataset.node.split(','),u=+a[0],i=+a[1],id=nid(l,u,i);
+    var c=duoCurrent(l),open=D.done[id]||(c&&c.u===u&&c.i===i);if(!open){toastD('ผ่านบทก่อนหน้าก่อนนะ 🔒');return;}
+    if(DUO_PLAN[i][0]==='chest'){if(!D.done[id]){D.done[id]=true;D.gems+=20;duoSave();toastD('เปิดหีบ ได้ 20 💎');renderPath();}return;}
+    duoStart(u,i);};});
+  var curEl=$('engBody').querySelector('.dz-node.cur');if(curEl&&!S.dzScrolled){S.dzScrolled=true;setTimeout(function(){curEl.scrollIntoView({block:'center'});},60);}
+}
+function toastD(t){try{showReply(t);}catch(e){}}
+function duoGuide(u){var un=DUO_UNITS[duoLang()][u];var h='<div class="dl-end" style="padding-top:2vh;align-items:stretch;text-align:left"><h2 style="color:'+un.c+'">📘 '+esc(un.t)+'</h2><div class="k" style="margin-bottom:12px">คำศัพท์และประโยคหลักของหน่วยนี้ · แตะเพื่อฟัง</div>'+
+  un.w.concat(un.s1).map(function(x){return '<button type="button" class="dl-c" data-hear="'+esc(x[0])+'" style="margin-bottom:8px"><span style="font-size:18px">🔊</span><span style="flex:1"><b>'+esc(x[0])+'</b><br><span style="color:var(--mut);font-size:14px;font-weight:500">'+esc(x[1])+'</span></span></button>';}).join('')+'</div>';
+  duoOpen(h,'<div class="dl-row"><button type="button" class="dl-btn" id="dlClose2">ปิด</button></div>');
+  $('dlClose2').onclick=duoClose;$('duoL').querySelectorAll('[data-hear]').forEach(function(b){b.onclick=function(){duoSpeak(b.dataset.hear);};});
+}
+/* ---- lesson building ---- */
+function mkEx(type,un,l){
+  var S1=un.s1,W=un.w;var all=DUO_UNITS[l].reduce(function(a,x){return a.concat(x.s1);},[]);
+  var s=S1[Math.floor(Math.random()*S1.length)];
+  if(type==='mc'){var opts=shuffle([s[0]].concat(pick(all.filter(function(x){return x[0]!==s[0];}),2).map(function(x){return x[0];})));return {k:'mc',q:'เลือกคำแปลที่ถูกต้อง',prompt:s[1],opts:opts,a:s[0]};}
+  if(type==='build'||type==='listen'){var t=toks(s[0]);var extra=pick(toks(pick(all.filter(function(x){return x[0]!==s[0];}),2).map(function(x){return x[0];}).join(' ')).filter(function(w){return t.map(norm).indexOf(norm(w))<0;}),3);
+    return {k:type,q:type==='listen'?'แตะคำที่ได้ยิน':'แปลประโยคนี้',prompt:s[1],en:s[0],bank:shuffle(t.concat(extra)),a:t.join(' ')};}
+  if(type==='match'){var ps=pick(W,4);return {k:'match',q:'จับคู่คำ',pairs:ps};}
+  if(type==='speak'){var sp=pick(S1.filter(function(x){return toks(x[0]).length<=6;}).concat(S1),1)[0];return {k:'speak',q:'พูดประโยคนี้',en:sp[0],th:sp[1]};}
+  if(type==='word'){var w=W[Math.floor(Math.random()*W.length)];var o=shuffle([w[1]].concat(pick(W.filter(function(x){return x!==w;}),2).map(function(x){return x[1];})));return {k:'word',q:'คำนี้แปลว่าอะไร',prompt:w[0],opts:o,a:w[1]};}
+}
+function duoStart(u,i){
+  duoRefill();if(D.hearts<=0){toastD('หัวใจหมดแล้ว รอ 30 นาที หรือแตะ ❤️ เพื่อเติม (50 💎)');return;}
+  var l=duoLang(),un=DUO_UNITS[l][u],t=DUO_PLAN[i][0],plan;
+  if(t==='listen')plan=['listen','word','listen','match','listen','mc','listen','build'];
+  else if(t==='speak')plan=['speak','build','speak','mc','speak','listen','speak','word'];
+  else if(t==='practice')plan=['match','mc','build','listen','word','build','speak','mc','match','build'];
+  else if(t==='trophy')plan=['build','listen','match','speak','mc','build','listen','word','speak','build'];
+  else plan=i===0?['word','word','match','mc','build','word','mc','build']:['mc','build','word','listen','match','build','speak','mc'];
+  if(!dict)plan=plan.map(function(x){return x==='speak'?'build':x;});
+  DL={u:u,i:i,l:l,un:un,ex:plan.map(function(k){return mkEx(k,un,l);}),n:0,wrong:0,start:Date.now(),retry:[]};
+  duoRender();
+}
+function duoOpen(body,foot,cls){var o=$('duoL');o.hidden=false;document.body.style.overflow='hidden';
+  $('dlBody').innerHTML=body;$('dlFoot').className='dl-foot'+(cls?' '+cls:'');$('dlFoot').innerHTML=foot;}
+function duoClose(){$('duoL').hidden=true;document.body.style.overflow='';try{if(DL&&DL.rec)DL.rec.abort();}catch(e){}DL=null;if(S.view==='eng')renderEng();}
+function duoSpeak(t,slow){try{if(!window.speechSynthesis)return;var u=new SpeechSynthesisUtterance(t);var l=duoLang();u.lang=l==='es'?'es-ES':'en-US';u.rate=slow?.6:.95;
+  var vs=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.indexOf(l==='es'?'es':'en')===0;});var best=vs.filter(function(v){return /enhanced|premium|samantha|daniel|google/i.test(v.name);})[0]||vs[0];if(best)u.voice=best;
+  speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function duoRender(){
+  var e=DL.ex[DL.n],total=DL.ex.length+DL.retry.length,pct=Math.round(DL.n/Math.max(1,DL.ex.length)*100);
+  $('dlProg').style.width=pct+'%';$('dlHearts').textContent='❤️ '+D.hearts;
+  DL.sel=null;DL.built=[];DL.matched={};DL.mL=null;DL.mR=null;DL.heard='';
+  var b='<div class="dl-kind">'+(e.k==='listen'?'🎧 ฝึกฟัง':e.k==='speak'?'🎤 ฝึกพูด':e.k==='match'?'🧩 จับคู่':e.k==='build'?'✍️ แปลประโยค':'✨ คำศัพท์')+'</div><h2 class="dl-q">'+esc(e.q)+'</h2>';
+  if(e.k==='mc'||e.k==='word'){
+    b+='<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub">'+(e.k==='word'?'<button type="button" class="dl-w" id="dlHear" style="margin-right:6px">🔊</button>':'')+'<b>'+esc(e.prompt)+'</b></div></div><div class="dl-ch">'+
+      e.opts.map(function(o,k){return '<button type="button" class="dl-c" data-opt="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>';}).join('')+'</div>';
+  }else if(e.k==='build'||e.k==='listen'){
+    b+=(e.k==='listen'?'<div class="dl-spk"><button type="button" id="dlPlay" aria-label="เล่นเสียง">🔊</button><button type="button" class="slow" id="dlSlow" aria-label="เล่นช้า">🐢</button></div>':
+      '<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub"><b>'+esc(e.prompt)+'</b></div></div>')+
+      '<div class="dl-ans two" id="dlAns"></div><div class="dl-bank" id="dlBank">'+e.bank.map(function(w,k){return '<button type="button" class="dl-w" data-w="'+k+'">'+esc(w)+'</button>';}).join('')+'</div>';
+  }else if(e.k==='match'){
+    var L1=shuffle(e.pairs.map(function(p,k){return k;})),R1=shuffle(e.pairs.map(function(p,k){return k;}));
+    b+='<div class="dl-grid">'+[0,1,2,3].map(function(r){return '<button type="button" class="dl-c" data-ml="'+L1[r]+'">'+esc(e.pairs[L1[r]][0])+'</button><button type="button" class="dl-c" data-mr="'+R1[r]+'">'+esc(e.pairs[R1[r]][1])+'</button>';}).join('')+'</div>';
+  }else if(e.k==='speak'){
+    b+='<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub"><button type="button" class="dl-w" id="dlHear" style="margin-right:6px">🔊</button><b>'+esc(e.en)+'</b><div style="color:var(--mut);font-size:14px;margin-top:4px">'+esc(e.th)+'</div></div></div>'+
+      '<button type="button" class="dl-mic" id="dlMic">🎤 แตะแล้วพูด</button><div class="dl-heard" id="dlHeard" aria-live="polite"></div>';
+  }
+  var foot='<div class="dl-fb" id="dlFb"></div><div class="dl-row">'+(e.k==='speak'?'<button type="button" class="dl-btn ghost" id="dlSkip">พูดไม่ได้ตอนนี้</button>':'')+'<button type="button" class="dl-btn" id="dlCheck" disabled>ตรวจคำตอบ</button></div>';
+  duoOpen(b,foot);
+  if(e.k==='listen'){setTimeout(function(){duoSpeak(e.en);},250);$('dlPlay').onclick=function(){duoSpeak(e.en);};$('dlSlow').onclick=function(){duoSpeak(e.en,true);};}
+  var hb=$('dlHear');if(hb)hb.onclick=function(){duoSpeak(e.prompt&&e.k==='word'?e.prompt:e.en);};
+  var body=$('dlBody');
+  body.querySelectorAll('[data-opt]').forEach(function(x){x.onclick=function(){body.querySelectorAll('[data-opt]').forEach(function(y){y.classList.remove('sel');});x.classList.add('sel');DL.sel=e.opts[+x.dataset.opt];$('dlCheck').disabled=false;if(e.k==='mc')duoSpeak(DL.sel);};});
+  body.querySelectorAll('[data-w]').forEach(function(x){x.onclick=function(){if(x.classList.contains('used'))return;x.classList.add('used');DL.built.push(+x.dataset.w);duoBuilt(e);duoSpeak(e.bank[+x.dataset.w]);};});
+  if(e.k==='match')duoMatchWire(e);
+  if(e.k==='speak'){$('dlMic').onclick=function(){duoListen(e);};$('dlSkip').onclick=function(){DL.ex.splice(DL.n,1);if(DL.n>=DL.ex.length)duoFinish();else duoRender();};}
+  $('dlCheck').onclick=function(){duoCheck(e);};
+}
+function duoBuilt(e){var a=$('dlAns');a.innerHTML=DL.built.map(function(k,ix){return '<button type="button" class="dl-w" data-b="'+ix+'">'+esc(e.bank[k])+'</button>';}).join('');
+  a.querySelectorAll('[data-b]').forEach(function(x){x.onclick=function(){var k=DL.built.splice(+x.dataset.b,1)[0];var src=$('dlBank').querySelector('[data-w="'+k+'"]');if(src)src.classList.remove('used');duoBuilt(e);};});
+  $('dlCheck').disabled=!DL.built.length;}
+function duoMatchWire(e){var body=$('dlBody'),left=null,right=null;
+  function tryPair(){if(left==null||right==null)return;var lb=body.querySelector('[data-ml="'+left+'"]'),rb=body.querySelector('[data-mr="'+right+'"]');
+    if(left===right){lb.classList.remove('sel');rb.classList.remove('sel');lb.classList.add('ok');rb.classList.add('ok');lb.disabled=rb.disabled=true;DL.matched[left]=1;duoSpeak(e.pairs[left][0]);
+      if(Object.keys(DL.matched).length===4){$('dlCheck').disabled=false;DL.sel='ok';}}
+    else{DL.wrong++;[lb,rb].forEach(function(x){x.classList.remove('sel');x.classList.add('badm');setTimeout(function(){x.classList.remove('badm');},500);});}
+    left=right=null;}
+  body.querySelectorAll('[data-ml]').forEach(function(x){x.onclick=function(){body.querySelectorAll('[data-ml]').forEach(function(y){y.classList.remove('sel');});x.classList.add('sel');left=+x.dataset.ml;tryPair();};});
+  body.querySelectorAll('[data-mr]').forEach(function(x){x.onclick=function(){body.querySelectorAll('[data-mr]').forEach(function(y){y.classList.remove('sel');});x.classList.add('sel');right=+x.dataset.mr;tryPair();};});}
+function sim(a,b){a=norm(a).split(' ');b=norm(b).split(' ');var hit=0;a.forEach(function(w){if(b.indexOf(w)>=0)hit++;});return hit/Math.max(a.length,1);}
+function duoListen(e){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('dlHeard').textContent='เครื่องนี้ฟังเสียงไม่ได้ กด “พูดไม่ได้ตอนนี้”';return;}
+  try{if(DL.rec)DL.rec.abort();}catch(x){}var r=new SR();DL.rec=r;r.lang=duoLang()==='es'?'es-ES':'en-US';r.interimResults=true;var m=$('dlMic');
+  r.onstart=function(){m.classList.add('on');m.textContent='🔴 กำลังฟัง… พูดได้เลย';};
+  r.onresult=function(ev){var t='';for(var k=0;k<ev.results.length;k++)t+=ev.results[k][0].transcript;DL.heard=t;$('dlHeard').textContent='ได้ยิน: '+t;$('dlCheck').disabled=!t;};
+  r.onerror=function(ev){$('dlHeard').textContent=ev.error==='not-allowed'?'ยังไม่ได้อนุญาตไมค์ใน Safari':'ไม่ได้ยิน ลองใหม่';};
+  r.onend=function(){m.classList.remove('on');m.textContent='🎤 แตะแล้วพูดอีกครั้ง';if(DL&&DL.heard&&sim(e.en,DL.heard)>=.7)duoCheck(e);};
+  try{r.start();}catch(x){$('dlHeard').textContent='เปิดไมค์ไม่ได้';}}
+function duoCheck(e){
+  var ok,ans;
+  if(e.k==='mc'||e.k==='word'){ok=DL.sel===e.a;ans=e.a;}
+  else if(e.k==='build'||e.k==='listen'){var got=DL.built.map(function(k){return e.bank[k];}).join(' ');ok=norm(got)===norm(e.a);ans=e.en+(e.k==='listen'?' · '+e.prompt:'');}
+  else if(e.k==='match'){ok=true;ans='';}
+  else if(e.k==='speak'){ok=sim(e.en,DL.heard)>=.7;ans=e.en;}
+  if(!ok){D.hearts=Math.max(0,D.hearts-1);D.hAt=D.hAt||Date.now();DL.wrong++;DL.ex.push(Object.assign({},e));duoSave();$('dlHearts').textContent='❤️ '+D.hearts;}
+  var praise=['เยี่ยมมาก!','ถูกต้อง!','สุดยอด!','เก่งมาก Arm!'];
+  $('dlFoot').className='dl-foot '+(ok?'ok':'bad');
+  $('dlFb').innerHTML='<b>'+(ok?'✅ '+praise[Math.floor(Math.random()*praise.length)]:'❌ คำตอบที่ถูก:')+'</b>'+(ans&&!ok?'<div>'+esc(ans)+'</div>':'');
+  $('dlBody').querySelectorAll('button').forEach(function(x){x.disabled=true;});
+  var c=$('dlCheck');c.disabled=false;c.textContent=ok?'ไปต่อ':'เข้าใจแล้ว';var sk=$('dlSkip');if(sk)sk.remove();
+  if(!ok&&(e.k==='build'||e.k==='listen'||e.k==='speak'))duoSpeak(e.en);
+  c.onclick=function(){if(D.hearts<=0){duoOut();return;}DL.n++;if(DL.n>=DL.ex.length)duoFinish();else duoRender();};
+}
+function duoOut(){duoOpen('<div class="dl-end"><div class="big">💔</div><h2 style="color:#FF5A6E">หัวใจหมดแล้ว</h2><p class="k">หัวใจเพิ่ม 1 ดวงทุก 30 นาที หรือใช้ 50 💎 เติมเต็ม</p></div>',
+  '<div class="dl-row"><button type="button" class="dl-btn ghost" id="dlQ">ออก</button><button type="button" class="dl-btn" id="dlRef"'+(D.gems<50?' disabled':'')+'>เติมหัวใจ (50 💎)</button></div>');
+  $('dlQ').onclick=duoClose;$('dlRef').onclick=function(){D.gems-=50;D.hearts=5;duoSave();DL.n++;if(DL.n>=DL.ex.length)duoFinish();else duoRender();};}
+function duoFinish(){
+  var secs=Math.round((Date.now()-DL.start)/1000),acc=Math.max(0,Math.round(100*(1-DL.wrong/Math.max(1,DL.ex.length)))),perfect=DL.wrong===0;
+  var xp=10+(perfect?5:0)+(DUO_PLAN[DL.i][0]==='trophy'?10:0);
+  D.xp+=xp;var td=duoToday();td.xp+=xp;td.lessons++;if(perfect)td.perfect++;
+  var y=dkey(addDays(S.now,-1));if(D.last!==S.key){D.streak=(D.last===y?D.streak:0)+1;D.last=S.key;}
+  D.done[nid(DL.l,DL.u,DL.i)]=true;if(perfect)D.gems+=5;duoSave();
+  try{addEng(Math.max(3,Math.round(secs/60)));}catch(x){}
+  duoOpen('<div class="dl-end"><div class="big">'+(perfect?'🏆':'🎉')+'</div><h2>'+(perfect?'บทเรียนเพอร์เฟกต์!':'จบบทเรียนแล้ว!')+'</h2><div class="k">🔥 สตรีค '+D.streak+' วัน</div>'+
+    '<div class="dl-tiles"><div class="dl-tile" style="--c:#FFD24A"><small>XP ทั้งหมด</small><b>⚡ '+xp+'</b></div><div class="dl-tile" style="--c:#6CC24A"><small>ความแม่นยำ</small><b>🎯 '+acc+'%</b></div><div class="dl-tile" style="--c:#5CC8FF"><small>เวลา</small><b>⏱ '+Math.floor(secs/60)+':'+pad(secs%60)+'</b></div></div></div>',
+    '<div class="dl-row"><button type="button" class="dl-btn" id="dlDone">ไปต่อ</button></div>');
+  $('dlDone').onclick=duoClose;
+}
+document.addEventListener('DOMContentLoaded',function(){});
+(function(){var o=document.createElement('div');o.id='duoL';o.hidden=true;o.setAttribute('role','dialog');o.setAttribute('aria-label','บทเรียน');
+  o.innerHTML='<div class="dl-top"><button type="button" class="dl-x" id="dlX" aria-label="ออกจากบทเรียน">✕</button><div class="dl-prog"><i id="dlProg" style="width:0"></i></div><span class="dl-hearts" id="dlHearts"></span></div><div class="dl-body" id="dlBody"></div><div class="dl-foot" id="dlFoot"></div>';
+  document.body.appendChild(o);o.addEventListener('pointerdown',function(ev){ev.stopPropagation();});
+  document.getElementById('dlX').onclick=duoClose;})();
+
 function setLang(l){S.lang=l;vocQueue=null;S.ci=0;S.qi=0;S.picked=null;S.flipped=false;renderEng();}
 $('lEN').onclick=function(){setLang('en');};$('lES').onclick=function(){setLang('es');};
 $('eCard').onclick=function(){S.eMode='card';renderEng();};$('eQuiz').onclick=function(){S.eMode='quiz';renderEng();};$('eChat').onclick=function(){S.eMode='chat';renderEng();};
@@ -1462,7 +1751,7 @@ async function boot(){
   if(!dict){dict=webDict();if(dict)dictWeb=true;}if(dict)wireDict();
   try{EXT.mcp=C?await C.use('mcp'):null;}catch(e){EXT.mcp=null;}if(EXT.mcp)watchExt();
   var p=await readDoc('profile');if(p){S.prof.nova=p.nova!==false;S.prof.autos=Object.assign(S.prof.autos,p.autos||{});S.prof.cfg=p.cfg||{};S.prof.hist=p.hist||[];S.prof.requests=p.requests||[];S.prof.safe=!!p.safe;S.prof.stats=p.stats||{};}
-  applyTheme();var vb=await readDoc('vocab');if(vb){VOC.en=vb.en||{};VOC.es=vb.es||{};}vocQueue=null;
+  applyTheme();var dz=await readDoc('duo');if(dz)D=Object.assign(D,dz);var vb=await readDoc('vocab');if(vb){VOC.en=vb.en||{};VOC.es=vb.es||{};}vocQueue=null;
   var fp=await readDoc('fitplan');if(fp&&Array.isArray(fp.days)){FIT.plan=fp;applyPlanDays();}var fg=await readDoc('fitprog');if(fg)FIT.prog=fg;var fl=await readDoc('fitlog');if(fl&&fl.list)FIT.log=fl.list;
   var ad=await readDoc('addons');if(ad&&Array.isArray(ad.list))ADD.list=ad.list;
   var r=await readDoc('d'+S.key);if(r)S.day=Object.assign(emptyDay(),r);
