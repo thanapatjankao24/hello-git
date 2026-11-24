@@ -21,6 +21,23 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .pill{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px;border-radius:19px;border:1px solid #3D2F14;background:var(--card);color:var(--acc);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .view{padding:8px 18px 20px;display:flex;flex-direction:column;gap:12px}
 .view[hidden]{display:none}
+.fg{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:16px}
+.fg-hd{display:flex;align-items:center;gap:8px}.fg-hd b{flex:1;font-size:17px}.fg-hd small{color:var(--mut);font-size:11px}
+.fg-g{display:block;width:100%;max-width:340px;margin:6px auto 0}
+.fg-sc{text-align:center;margin-top:2px;position:relative}
+.fg-sc .n{font-size:46px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.fg-sc .r{font-size:16px;font-weight:800;margin-top:4px}
+.fg-cmp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0 4px}
+.fg-c{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:7px 4px;text-align:center}
+.fg-c small{display:block;font-size:10px;color:var(--mut)}.fg-c b{font-size:16px;font-variant-numeric:tabular-nums}
+.fg-c i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:1px}
+.fg-ind{margin-top:12px;border-top:1px dashed var(--line2);padding-top:10px}
+.fg-ind summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--acc2);list-style:none;min-height:32px;display:flex;align-items:center}
+.fg-ind summary::-webkit-details-marker{display:none}.fg-ind summary:after{content:" ▾"}.fg-ind[open] summary:after{content:" ▴"}
+.fg-row{display:flex;align-items:center;gap:10px;margin:9px 0}.fg-row span{flex:1;font-size:13px}
+.fg-mini{position:relative;width:96px;height:8px;border-radius:4px;background:linear-gradient(90deg,#E5484D 0 25%,#F08C3A 25% 45%,#8E8E96 45% 55%,#7CC85A 55% 75%,#2FA36B 75%)}
+.fg-mini i{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:#fff;box-shadow:0 0 0 2px var(--card);margin-left:-2px}
+.fg-row em{font-style:normal;font-size:11px;font-weight:700;min-width:62px;text-align:right}
 .bf{margin-bottom:16px}
 .bf-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}.bf-top>div{flex:1}
 .bf-ttl{font-size:20px;font-weight:800;letter-spacing:-.2px}.bf-meta{font-size:12px;color:var(--mut);margin-top:2px}
@@ -257,6 +274,7 @@ nav .nb[aria-current="page"]{color:var(--acc);font-weight:600}
 
 <section class="view" id="v-news" hidden>
   <div class="seg" role="tablist" aria-label="หมวดข่าว"><button type="button" role="tab" id="nTech" aria-selected="true">เทคโนโลยี</button><button type="button" role="tab" id="nStock" aria-selected="false">หุ้นสหรัฐ</button></div>
+  <div id="fgCard" class="fg"></div>
   <div id="briefCard" class="bf">
     <div class="bf-top"><div><div class="bf-ttl">⚡ ข่าวเน้นๆ</div><div class="bf-meta" id="briefMeta">คัดเฉพาะเรื่องสำคัญ</div></div>
       <button type="button" class="bf-ref" id="briefGo" aria-label="สรุปข่าวใหม่"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button></div>
@@ -902,7 +920,39 @@ $('wkAsk').onclick=async function(){
 /* news */
 var NEWS={tech:[['Blognone','ข่าวไอทีภาษาไทย','https://www.blognone.com/'],['The Verge','ข่าวเทคภาษาอังกฤษ','https://www.theverge.com/tech'],['TechCrunch','สตาร์ทอัปและ AI','https://techcrunch.com/']],
   stock:[['CNBC Markets','ภาพรวมตลาดหุ้นสหรัฐ','https://www.cnbc.com/markets/'],['Yahoo Finance','S&P 500 / Nasdaq / Dow','https://finance.yahoo.com/markets/'],['Reuters Markets','ข่าวตลาดการเงินโลก','https://www.reuters.com/markets/']]};
+
+/* Fear & Greed card */
+var FG_TH={'extreme fear':['กลัวสุดขีด','😱','#E5484D'],'fear':['กลัว','😟','#F08C3A'],'neutral':['กลางๆ','😐','#A8A8B0'],'greed':['โลภ','😊','#7CC85A'],'extreme greed':['โลภสุดขีด','🤑','#2FA36B']};
+function fgLv(n){return n<25?'extreme fear':n<45?'fear':n<=55?'neutral':n<=75?'greed':'extreme greed';}
+var FG_BUSY=false,FG_ASKED=false;
+function fgGauge(score){var cx=170,cy=160,R=130,w=30;function pt(v,r){var a=Math.PI*(1-v/100);return [cx+r*Math.cos(a),cy-r*Math.sin(a)];}
+  function arc(a,b,col,on){var p1=pt(a,R),p2=pt(b,R),p3=pt(b,R-w),p4=pt(a,R-w);return '<path d="M'+p1+' A'+R+' '+R+' 0 0 1 '+p2+' L'+p3+' A'+(R-w)+' '+(R-w)+' 0 0 0 '+p4+' Z" fill="'+col+'" opacity="'+(on?1:.28)+'"/>';}
+  var segs=[[0,25,'#E5484D'],[25,45,'#F08C3A'],[45,55,'#A8A8B0'],[55,75,'#7CC85A'],[75,100,'#2FA36B']],h='';
+  segs.forEach(function(g){h+=arc(g[0]+.6,g[1]-.6,g[2],score>=g[0]&&(score<g[1]||g[1]===100));});
+  [0,25,50,75,100].forEach(function(v){var q=pt(v,R+14);h+='<text x="'+q[0]+'" y="'+(q[1]+4)+'" text-anchor="middle" font-size="12" fill="#93918C">'+v+'</text>';});
+  var tip=pt(score,R-w-8),b1=pt(score+50,9),b2=pt(score-50,9);
+  h+='<path d="M'+tip+' L'+b1+' L'+b2+' Z" fill="#EDE7DC"/><circle cx="'+cx+'" cy="'+cy+'" r="11" fill="#EDE7DC"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="#131417"/>';
+  return '<svg class="fg-g" viewBox="0 0 340 176" role="img" aria-label="มาตรวัด Fear and Greed คะแนน '+score+'">'+h+'</svg>';}
+function renderFG(){var el=$('fgCard');if(!el)return;var d=lsGet('fg');
+  if(!d){el.innerHTML='<div class="fg-hd"><b>📊 Fear & Greed Index</b></div><div class="k" style="margin-top:10px">'+(FG_BUSY?'กำลังโหลด…':'แตะ ↻ เพื่อโหลดค่าล่าสุด')+'</div>';return;}
+  var lv=FG_TH[d.rating]||FG_TH[fgLv(d.score)];
+  function chip(lbl,v){var c=(FG_TH[fgLv(v)]||lv)[2];return '<div class="fg-c"><small>'+lbl+'</small><b><i style="background:'+c+'"></i>'+v+'</b></div>';}
+  var up=d.score-d.prev;
+  var when='';try{when=new Date(d.ts).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Bangkok'});}catch(e){}
+  el.innerHTML='<div class="fg-hd"><b>📊 Fear & Greed Index</b><button type="button" class="bf-ref'+(FG_BUSY?' spin':'')+'" id="fgGo" aria-label="อัปเดต Fear and Greed" style="width:40px;height:40px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button></div>'+
+    '<small style="color:var(--mut);font-size:11px">ตลาดหุ้นสหรัฐตอนนี้ "กลัว" หรือ "โลภ" แค่ไหน · CNN'+(when?' · '+when:'')+(d.stale?' · ข้อมูลเก่า':'')+'</small>'+
+    fgGauge(d.score)+'<div class="fg-sc"><div class="n" style="color:'+lv[2]+'">'+d.score+'</div><div class="r" style="color:'+lv[2]+'">'+lv[1]+' '+lv[0]+'</div>'+
+    '<div class="k" style="margin-top:4px">'+(up===0?'เท่ากับเมื่อวาน':(up>0?'▲ ':'▼ ')+Math.abs(up)+' จากเมื่อวาน')+'</div></div>'+
+    '<div class="fg-cmp">'+chip('เมื่อวาน',d.prev)+chip('สัปดาห์ก่อน',d.w1)+chip('เดือนก่อน',d.m1)+chip('ปีก่อน',d.y1)+'</div>'+
+    (d.ind&&d.ind.length?'<details class="fg-ind"><summary>ตัวชี้วัด 7 ตัว</summary>'+d.ind.map(function(x){var t=FG_TH[x.rating]||FG_TH[fgLv(x.score)];return '<div class="fg-row"><span>'+esc(x.th)+'</span><div class="fg-mini"><i style="left:'+Math.max(0,Math.min(100,x.score))+'%"></i></div><em style="color:'+t[2]+'">'+t[0]+'</em></div>';}).join('')+'</details>':'')+
+    '<div class="bf-note">0–25 กลัวสุดขีด · 75–100 โลภสุดขีด · เพื่อการเรียนรู้ ไม่ใช่คำแนะนำการลงทุน</div>';
+  $('fgGo').onclick=function(){loadFG(true);};}
+async function loadFG(force){if(FG_BUSY||!window.ARB_CALL)return;FG_BUSY=true;renderFG();
+  try{var d=await window.ARB_CALL({op:'fg',force:!!force});if(d&&typeof d.score==='number'){lsSet('fg',d);}else throw new Error('x');}
+  catch(e){if(!lsGet('fg')&&$('fgCard'))$('fgCard').innerHTML='<div class="fg-hd"><b>📊 Fear & Greed Index</b></div><div class="warn" style="margin-top:10px">ดึงข้อมูลจาก CNN ไม่ได้ตอนนี้ <a href="https://www.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener" style="color:var(--acc2)">เปิดดูที่ CNN</a></div>';FG_BUSY=false;return;}
+  FG_BUSY=false;renderFG();}
 function renderNews(){
+  renderFG();if(S.view==='news'&&!FG_ASKED){FG_ASKED=true;loadFG(false);}
   renderBrief();if(S.view==='news'&&!BRIEF.auto){var c0=lsGet('brief2');var today=S.key;if(!c0||String(c0.u||'').slice(0,10)!==today){BRIEF.auto=true;setTimeout(function(){makeBrief(false);},300);}}
   $('nTech').setAttribute('aria-selected',S.news==='tech');$('nStock').setAttribute('aria-selected',S.news==='stock');
   var extra=((S.prof.cfg||{}).news||[]).filter(function(n){return n.cat===S.news;}).map(function(n){return [n.name,n.desc||'เพิ่มโดย ARB',n.url];});
