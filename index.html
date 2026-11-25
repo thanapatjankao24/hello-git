@@ -115,7 +115,7 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .dz-pop button{width:100%;min-height:48px;border-radius:14px;border:none;background:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25)}
 /* lesson overlay */
 #duoL{position:fixed;inset:0;z-index:200;background:#101216;display:flex;flex-direction:column;color:var(--txt)}
-#duoL[hidden],#engTop[hidden]{display:none}
+#duoL[hidden],#engTop[hidden],#foodForm[hidden]{display:none}
 .dl-top{display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 16px 10px}
 .dl-x{width:44px;height:44px;border:none;background:transparent;color:var(--mut);font-size:26px;cursor:pointer}
 .dl-prog{flex:1;height:16px;border-radius:8px;background:#2A2D34;overflow:hidden}
@@ -167,6 +167,14 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .dl-tile small{display:block;background:var(--c);color:#111;font-weight:800;font-size:12px;padding:5px}
 .dl-tile b{display:block;padding:12px 4px;font-size:20px;color:var(--c)}
 @media (prefers-reduced-motion:reduce){.dz-tip,.dz-node.chest.cur{animation:none}}
+.kc{padding:16px}.kc-top{display:flex;align-items:flex-end;gap:10px}.kc-big{font-size:34px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.kc-of{color:var(--mut);font-size:14px;font-weight:600}.kc-left{margin-left:auto;text-align:right;font-size:12px;color:var(--mut)}.kc-left b{display:block;font-size:18px;color:var(--txt)}
+.kc-bar{height:12px;border-radius:6px;background:#25272D;overflow:hidden;margin:10px 0 4px;position:relative}.kc-bar i{display:block;height:100%;border-radius:6px;transition:width .5s}
+.kc-row{display:flex;gap:8px;margin-top:12px}.kc-m{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.kc-m small{display:block;font-size:11px;color:var(--mut)}.kc-m b{font-size:15px;font-variant-numeric:tabular-nums}
+.kc-set{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.kc-set label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+.kc-set input,.kc-set select{min-height:42px;border-radius:12px;border:1px solid var(--line2);background:var(--bg);color:var(--txt);font-size:16px;padding:0 10px}
+.kc-tag{font-size:12px;color:var(--acc2);font-weight:700;margin-left:4px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .k{font-size:12px;color:var(--mut)}
@@ -398,8 +406,10 @@ nav .nb[aria-current="page"]{color:var(--acc);font-weight:600}
   <div id="fitPlanBox" hidden></div>
   <div id="fitTodayBox" hidden></div>
   <div id="fitFoodBox" hidden style="display:flex;flex-direction:column;gap:12px">
+  <div class="card kc" id="kcCard"></div>
   <div class="card" style="padding:14px 16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>🍱 อาหารวันนี้</b><span class="k" id="mealCount"></span></div>
+    <form id="dayForm" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"><label for="dayIn" class="k">📝 วันนี้กินอะไรไปบ้าง (พิมพ์รวมทั้งวันได้เลย)</label><textarea id="dayIn" rows="2" placeholder="เช่น เช้ากาแฟกับขนมปัง เที่ยงกะเพราไก่ไข่ดาว บ่ายนมเปรี้ยว เย็นสุกี้" style="min-height:64px;border-radius:14px;border:1px solid var(--line2);background:var(--bg);color:var(--txt);font-size:16px;padding:10px 12px;font-family:inherit;resize:vertical"></textarea><button type="submit" class="btn" id="dayGo" style="min-height:44px">บันทึกทั้งวัน + คำนวณแคลอรี่</button><div class="k" id="dayNote" aria-live="polite"></div></form>
     <div id="mealRows"></div>
     <form id="foodForm" hidden style="display:flex;gap:8px;margin-top:8px"><label for="foodIn" class="sr" id="foodLbl">กินอะไร</label><input id="foodIn" type="text" autocomplete="off" placeholder="กินอะไรไป เช่น ข้าวมันไก่"><button type="submit" class="ibtn on" aria-label="บันทึกอาหาร">✓</button></form>
   </div>
@@ -720,13 +730,58 @@ function renderStreaks(){
   $('streakRow').innerHTML=STREAKS.map(function(x){var n=streak(x[2]);return '<div style="flex:1;min-width:96px;background:var(--card);border:1px solid '+(n>=3?'#3D2F14':'var(--line)')+';border-radius:16px;padding:10px 12px"><div class="k">'+x[0]+' '+esc(x[1])+'</div><div class="num" style="font-size:22px;font-weight:600;color:'+(n>=3?'var(--acc)':'var(--txt)')+'">'+(n>=1?'🔥 ':'')+n+' <span style="font-size:12px;color:var(--mut)">วัน</span></div></div>';}).join('');
 }
 function renderFood(){
-  var f=S.day.food||[];$('mealCount').textContent=mealsDone()+'/3 มื้อ';
+  var f=S.day.food||[];$('mealCount').textContent=mealsDone()+'/3 มื้อ';renderKcal();f.forEach(function(x){if(typeof x.kcal!=='number')kcEstimate(x);});
   $('mealRows').innerHTML=MEALS.concat([['snack','ของว่าง']]).map(function(m){
     var items=f.filter(function(x){return x.meal===m[0];}),ok=items.length||(m[0]!=='snack'&&S.day.done&&S.day.done[m[0]]);
     if(m[0]==='snack'&&!items.length)return '';
-    return '<button type="button" class="task'+(ok?' done':'')+'" data-meal="'+m[0]+'" style="margin-bottom:6px;min-height:46px"><span class="box">'+(ok?CHECK:'')+'</span><span class="ti" style="text-decoration:none;color:var(--txt)">'+m[1]+'<small>'+(items.length?esc(items.map(function(x){return x.text+' · '+x.at;}).join(', ')):ok?'ติ๊กว่ากินแล้ว (แตะเพื่อบอกว่ากินอะไร)':'ยังไม่ได้บันทึก · แตะเพื่อบันทึก')+'</small></span></button>';
+    return '<button type="button" class="task'+(ok?' done':'')+'" data-meal="'+m[0]+'" style="margin-bottom:6px;min-height:46px"><span class="box">'+(ok?CHECK:'')+'</span><span class="ti" style="text-decoration:none;color:var(--txt)">'+m[1]+'<small>'+(items.length?esc(items.map(function(x){return x.text+' · '+x.at+(typeof x.kcal==='number'?' · ~'+x.kcal+' kcal':'');}).join(', ')):ok?'ติ๊กว่ากินแล้ว (แตะเพื่อบอกว่ากินอะไร)':'ยังไม่ได้บันทึก · แตะเพื่อบันทึก')+'</small></span></button>';
   }).join('')+(f.length?'':'<div class="k" style="margin-top:2px">บอก ARB ได้ เช่น "เที่ยงนี้กินกะเพราไก่"</div>');
 }
+
+/* ===== calories ===== */
+var KC_GOAL={cut:['ลดไขมัน',-400,1.8],keep:['คงน้ำหนัก',0,1.6],gain:['เพิ่มกล้าม',300,1.8]};
+function kcBody(){return (S.prof&&S.prof.body)||null;}
+function kcTarget(){var b=kcBody();if(!b||!b.w||!b.h||!b.age)return null;
+  var bmr=10*b.w+6.25*b.h-5*b.age+(b.sex==='f'?-161:5);var days=FIT.plan&&FIT.plan.days?FIT.plan.days.length:(b.days||3);
+  var act=days>=5?1.6:days>=3?1.5:days>=1?1.4:1.25;var g=KC_GOAL[b.goal||'keep']||KC_GOAL.keep;
+  var tdee=Math.round(bmr*act/10)*10,kcal=Math.max(Math.round(bmr*1.1/10)*10,tdee+g[1]);
+  return {bmr:Math.round(bmr),tdee:tdee,kcal:kcal,p:Math.round(b.w*g[2]),goal:g[0]};}
+function kcEaten(){var k=0,p=0,n=0,pend=0;(S.day.food||[]).forEach(function(f){if(typeof f.kcal==='number'){k+=f.kcal;p+=f.p||0;n++;}else pend++;});return {k:k,p:p,n:n,pend:pend};}
+var KC_EDIT=false;
+function renderKcal(){var el=$('kcCard');if(!el)return;var t=kcTarget(),e=kcEaten();
+  if(!t||KC_EDIT){var b=kcBody()||{};
+    el.innerHTML='<b>🔥 ตั้งค่าร่างกาย</b><div class="k" style="margin-top:4px">ใช้คำนวณว่าแต่ละวันควรกินกี่แคลอรี่</div><form id="kcForm" class="kc-set">'+
+      '<label>เพศ<select id="kcSex"><option value="m"'+(b.sex!=='f'?' selected':'')+'>ชาย</option><option value="f"'+(b.sex==='f'?' selected':'')+'>หญิง</option></select></label>'+
+      '<label>อายุ (ปี)<input id="kcAge" type="number" inputmode="numeric" min="12" max="90" value="'+(b.age||'')+'" required></label>'+
+      '<label>ส่วนสูง (ซม.)<input id="kcH" type="number" inputmode="decimal" min="120" max="220" value="'+(b.h||'')+'" required></label>'+
+      '<label>น้ำหนัก (กก.)<input id="kcW" type="number" inputmode="decimal" min="30" max="200" step="0.1" value="'+(b.w||'')+'" required></label>'+
+      '<label style="grid-column:1/-1">เป้าหมาย<select id="kcGoal">'+Object.keys(KC_GOAL).map(function(k){return '<option value="'+k+'"'+((b.goal||'keep')===k?' selected':'')+'>'+KC_GOAL[k][0]+'</option>';}).join('')+'</select></label>'+
+      '<button type="submit" class="btn" style="grid-column:1/-1;min-height:46px">คำนวณ</button></form>';
+    $('kcForm').onsubmit=function(ev){ev.preventDefault();S.prof.body={sex:$('kcSex').value,age:+$('kcAge').value,h:+$('kcH').value,w:+$('kcW').value,goal:$('kcGoal').value};saveProf();KC_EDIT=false;renderKcal();};return;}
+  var pct=Math.min(1,e.k/t.kcal),over=e.k>t.kcal*1.1,col=over?'#F08C3A':pct>=.85?'#6CC24A':'var(--acc)';var left=t.kcal-e.k;
+  el.innerHTML='<div style="display:flex;align-items:center;gap:8px"><b style="flex:1">🔥 แคลอรี่วันนี้<span class="kc-tag">'+esc(t.goal)+'</span></b><button type="button" class="pill" id="kcEdit" style="min-height:32px;font-size:12px">แก้ข้อมูล</button></div>'+
+    '<div class="kc-top" style="margin-top:10px"><div><span class="kc-big" style="color:'+col+'">'+e.k.toLocaleString()+'</span> <span class="kc-of">/ '+t.kcal.toLocaleString()+' kcal</span></div><div class="kc-left">'+(left>=0?'เหลือกินได้อีก':'เกินเป้า')+'<b>'+Math.abs(left).toLocaleString()+'</b></div></div>'+
+    '<div class="kc-bar"><i style="width:'+(pct*100)+'%;background:'+col+'"></i></div>'+
+    '<div class="kc-row"><div class="kc-m"><small>โปรตีน</small><b>'+e.p+'</b><span class="k"> / '+t.p+' g</span><div class="kc-bar" style="height:6px;margin:6px 0 0"><i style="width:'+Math.min(100,e.p/t.p*100)+'%;background:var(--blue)"></i></div></div>'+
+    '<div class="kc-m"><small>ใช้พลังงานต่อวัน</small><b>~'+t.tdee.toLocaleString()+'</b><span class="k"> kcal</span></div></div>'+
+    '<div class="k" style="margin-top:8px;font-size:12px">'+(e.pend?'⏳ กำลังประเมินแคลอรี่ '+e.pend+' รายการ · ':'')+'ตัวเลขทุกเมนูเป็นค่า<b>ประมาณ</b>จาก AI · คิดจากสูตร Mifflin-St Jeor</div>';
+  $('kcEdit').onclick=function(){KC_EDIT=true;renderKcal();};}
+var KC_BUSY={};
+async function kcEstimate(f){if(!f||typeof f.kcal==='number'||KC_BUSY[f.at+f.text])return;if(!sample||sampleOff)return;KC_BUSY[f.at+f.text]=1;
+  try{var v=await sample.json('ประเมินพลังงานอาหารแบบคนไทยทั่วไป 1 จาน/ที่ ถ้าไม่ระบุปริมาณ: "'+String(f.text).slice(0,80)+'"\nตอบ JSON เท่านั้น: {"kcal":ตัวเลข,"p":โปรตีนกรัม,"note":"ส่วนประกอบหลักสั้นๆ ไม่เกิน 6 คำ"}',{modelTier:'default'});
+    if(v&&isFinite(+v.kcal)){f.kcal=Math.max(0,Math.min(3000,Math.round(+v.kcal)));f.p=Math.max(0,Math.min(200,Math.round(+v.p||0)));f.kn=String(v.note||'').slice(0,40);saveDay();renderFood();}}
+  catch(e){}finally{delete KC_BUSY[f.at+f.text];}}
+
+$('dayForm').addEventListener('submit',async function(ev){ev.preventDefault();var t=$('dayIn').value.trim();if(!t)return;
+  if(!sample||sampleOff){$('dayNote').textContent='ตอนนี้เรียกใช้ AI ไม่ได้ แตะทีละมื้อด้านล่างแทนได้';return;}
+  $('dayGo').disabled=true;$('dayNote').textContent='กำลังแยกมื้อและคำนวณแคลอรี่…';
+  try{var v=await sample.json('แยกอาหารที่คนไทยคนหนึ่งกินทั้งวันจากข้อความนี้เป็นรายการ และประเมินพลังงานต่อรายการ (ถ้าไม่บอกปริมาณ ให้คิดเป็น 1 จาน/ที่ แบบทั่วไปในไทย)\nข้อความ: "'+t.slice(0,400)+'"\nตอบ JSON: {"items":[{"meal":"breakfast|lunch|dinner|snack","text":"ชื่ออาหารสั้นๆ ภาษาไทย","kcal":ตัวเลข,"p":โปรตีนกรัม}]} ห้ามเดารายการที่ไม่ได้พูดถึง',{modelTier:'default'});
+    var its=(v&&Array.isArray(v.items)?v.items:[]).filter(function(x){return x&&x.text;}).slice(0,15);if(!its.length)throw new Error('empty');
+    var at=nowHM();S.day.food=its.map(function(x){var m=['breakfast','lunch','dinner','snack'].indexOf(x.meal)>=0?x.meal:'snack';return {meal:m,text:String(x.text).slice(0,80),at:at,kcal:Math.max(0,Math.min(3000,Math.round(+x.kcal||0))),p:Math.max(0,Math.min(200,Math.round(+x.p||0)))};});
+    S.day.done=S.day.done||{};MEALS.forEach(function(m){if(S.day.food.some(function(f){return f.meal===m[0];}))S.day.done[m[0]]=true;});
+    saveDay();$('dayIn').value='';var e=kcEaten();$('dayNote').textContent='บันทึก '+its.length+' รายการ · รวมประมาณ '+e.k.toLocaleString()+' kcal';render();}
+  catch(err){$('dayNote').textContent='แยกมื้อไม่สำเร็จ ลองเขียนใหม่ เช่น "เช้า… เที่ยง… เย็น…"';if(err&&err.code==='not_granted')sampleOff=true;}
+  $('dayGo').disabled=false;});
 var foodMeal=null;
 $('mealRows').addEventListener('click',function(e){var b=e.target.closest('[data-meal]');if(!b)return;foodMeal=b.dataset.meal;$('foodForm').hidden=false;var nm={breakfast:'มื้อเช้า',lunch:'มื้อเที่ยง',dinner:'มื้อเย็น',snack:'ของว่าง'}[foodMeal];$('foodLbl').textContent=nm+' กินอะไร';$('foodIn').placeholder=nm+' กินอะไร เช่น ข้าวมันไก่';$('foodIn').focus();});
 $('foodForm').addEventListener('submit',function(e){e.preventDefault();var t=$('foodIn').value.trim();if(!t||!foodMeal)return;$('foodIn').value='';$('foodForm').hidden=true;logFood(foodMeal,t);foodMeal=null;});
@@ -876,7 +931,7 @@ $('fChat').onclick=function(){FIT.tab='chat';renderFit();};$('fFood').onclick=fu
 $('foodAsk').onclick=async function(){
   var b=this,f=S.day.food||[];if(!sample||sampleOff){$('foodAdvice').textContent='ต้องใช้ Claude ในการประเมิน ตอนนี้ยังเรียกใช้ไม่ได้';return;}
   b.disabled=true;$('foodAdvice').textContent='โค้ชกำลังดู…';var pd=planDay(S.now.getDay());
-  try{var r=await sample(COACH_SYS.split('ท้ายคำตอบทุกครั้ง')[0]+'\n\nตอนนี้ '+TH_DAYS[S.now.getDay()]+' '+pad(S.now.getHours())+':'+pad(S.now.getMinutes())+' เป้าหมาย: '+(FIT.plan?FIT.plan.goal:'ยังไม่ได้ตั้ง')+' วันนี้'+(pd?'มีเล่น '+pd.title:'เป็นวันพัก')+(isDone('gym')?' (เล่นเสร็จแล้ว)':'')+'\nมื้อที่กินวันนี้: '+(f.length?f.map(function(x){return x.meal+': '+x.text+' ('+x.at+')';}).join(', '):'ยังไม่ได้บันทึก')+' · ติ๊กว่ากินแล้ว '+mealsDone()+'/3 มื้อ\n\nประเมินสั้น ๆ ว่าวันนี้กินพอและเหมาะกับเป้าหมายไหม ดูทั้งความครบมื้อ โปรตีน ผักผลไม้ และน้ำ แนะนำมื้อถัดไปหรือของว่าง 1-2 อย่างที่หาง่ายในไทย ตอบภาษาไทย ไม่เกิน 6 บรรทัด ไม่ใช้ markdown ไม่ตำหนิ ไม่แนะนำอดอาหาร',{modelTier:'quick',cache:false,onText:function(o){$('foodAdvice').textContent=o.text;}});
+  try{var r=await sample(COACH_SYS.split('ท้ายคำตอบทุกครั้ง')[0]+'\n\nตอนนี้ '+TH_DAYS[S.now.getDay()]+' '+pad(S.now.getHours())+':'+pad(S.now.getMinutes())+' เป้าหมาย: '+(FIT.plan?FIT.plan.goal:'ยังไม่ได้ตั้ง')+' วันนี้'+(pd?'มีเล่น '+pd.title:'เป็นวันพัก')+(isDone('gym')?' (เล่นเสร็จแล้ว)':'')+'\nมื้อที่กินวันนี้: '+(f.length?f.map(function(x){return x.meal+': '+x.text+' ('+x.at+')';}).join(', '):'ยังไม่ได้บันทึก')+' · ติ๊กว่ากินแล้ว '+mealsDone()+'/3 มื้อ'+(function(){var t=kcTarget(),e=kcEaten();return t?'\nเป้าวันนี้ '+t.kcal+' kcal โปรตีน '+t.p+' g (เป้าหมาย '+t.goal+', ใช้พลังงาน ~'+t.tdee+') · กินแล้วประมาณ '+e.k+' kcal โปรตีน '+e.p+' g · บอกด้วยว่าเหลืออีกกี่ kcal/โปรตีน และมื้อที่เหลือควรกินประมาณเท่าไหร่ พร้อมตัวอย่างเมนูไทย':'';})()+'\n\nประเมินจากอาหารทั้งวันที่กินไปแล้ว ว่าวันนี้กินพอและเหมาะกับเป้าหมายไหม ดูทั้งความครบมื้อ โปรตีน ผักผลไม้ และน้ำ แนะนำมื้อถัดไปหรือของว่าง 1-2 อย่างที่หาง่ายในไทย ตอบภาษาไทย ไม่เกิน 6 บรรทัด ไม่ใช้ markdown ไม่ตำหนิ ไม่แนะนำอดอาหาร',{modelTier:'quick',cache:false,onText:function(o){$('foodAdvice').textContent=o.text;}});
     $('foodAdvice').textContent=r.text;}catch(e){$('foodAdvice').textContent='ยังประเมินไม่สำเร็จ ลองใหม่อีกครั้ง';if(e&&e.code==='not_granted')sampleOff=true;}
   b.disabled=false;
 };$('fPlan').onclick=function(){FIT.tab='plan';renderFit();};$('fToday').onclick=function(){FIT.tab='today';renderFit();};
