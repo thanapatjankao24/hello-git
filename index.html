@@ -1116,6 +1116,41 @@ var DUO_UNITS={
    w:[['café','กาแฟ'],['agua','น้ำ'],['comida','อาหาร'],['cuenta','บิล'],['rico','อร่อย'],['mesa','โต๊ะ']]}
  ]};
 /* node plan per unit: type, icon */
+/* ===== B1 units (part 2) ===== */
+DUO_UNITS.en=DUO_UNITS.en.concat([
+ {t:'SQL และรายงาน (ศัพท์งานจริง)',c:'#0E9F8A',s:'#08695B',m:'🗄️',lv:'B1',
+  g:'Passive voice ใช้เมื่อสนใจ "สิ่งที่ถูกทำ" มากกว่า "ใครทำ": The report <b>was generated</b> automatically. / The table <b>is updated</b> every night.',
+  s1:[['The report is generated from the sales table.','รายงานสร้างจากตารางยอดขาย'],['I joined the two tables by customer ID.','ผมเชื่อมสองตารางด้วยรหัสลูกค้า'],['This stored procedure takes two parameters.','สโตร์โปรซีเยอร์นี้รับพารามิเตอร์สองตัว'],['The query returns duplicate rows.','คิวรีคืนแถวที่ซ้ำกันออกมา'],['I added a filter for the date range.','ผมเพิ่มตัวกรองช่วงวันที่'],['The subreport shows the details of each order.','ซับรีพอร์ตแสดงรายละเอียดของแต่ละออร์เดอร์'],['The data was exported to Excel.','ข้อมูลถูกส่งออกเป็น Excel'],['We need to deploy the new version on Friday.','เราต้องดีพลอยเวอร์ชันใหม่วันศุกร์']],
+  w:[['join','เชื่อม (ตาราง)'],['stored procedure','ชุดคำสั่งที่เก็บไว้ในฐานข้อมูล'],['parameter','ค่าที่ส่งเข้าไป'],['duplicate','ซ้ำกัน'],['deploy','นำขึ้นระบบจริง'],['export','ส่งออก']],
+  gap:[['I ___ the two tables by customer ID.','joined',['joint','joining'],'ผมเชื่อมสองตารางด้วยรหัสลูกค้า'],['The report ___ generated every morning.','is',['are','has'],'รายงานถูกสร้างทุกเช้า'],['The query returns ___ rows.','duplicate',['duplicated by','duplicating'],'คิวรีคืนแถวที่ซ้ำ'],['The data ___ exported to Excel yesterday.','was',['is','were'],'ข้อมูลถูกส่งออกเป็น Excel เมื่อวาน'],['This procedure takes two ___.','parameters',['parameter','parametering'],'โปรซีเยอร์นี้รับพารามิเตอร์สองตัว']],
+  fix:[['The report were generated yesterday.','The report was generated yesterday.','report เป็นเอกพจน์ ใช้ was'],['I join the tables yesterday.','I joined the tables yesterday.','มี yesterday ต้องใช้อดีต joined'],['The table is update every night.','The table is updated every night.','passive ใช้ is + V3 (updated)']]},
+ {t:'คุยกับพี่เลี้ยง',c:'#C2508F',s:'#84305E',m:'🧑‍🏫',lv:'B1',
+  g:'ขอความช่วยเหลือแบบสุภาพ: <b>Could you</b> + V1 …? / <b>Would you mind</b> + V-ing …? / <b>I was wondering if</b> you could …',
+  s1:[['Could you show me how to run this report?','ช่วยสอนวิธีรันรายงานนี้หน่อยได้ไหมครับ'],['Would you mind checking my query?','รบกวนช่วยเช็กคิวรีของผมหน่อยได้ไหมครับ'],['I am not sure what this error means.','ผมไม่แน่ใจว่าเออเรอร์นี้หมายถึงอะไร'],['I tried two ways, but neither of them worked.','ผมลองสองวิธีแล้ว แต่ไม่ได้ทั้งคู่'],['I was wondering if you could explain this table.','ไม่ทราบว่าช่วยอธิบายตารางนี้ได้ไหมครับ'],['Sorry to bother you, do you have a minute?','ขอโทษที่รบกวน พอมีเวลาสักนาทีไหมครับ'],['That makes sense now, thank you.','ตอนนี้เข้าใจแล้ว ขอบคุณครับ'],['Should I finish this first or start the new task?','ผมควรทำอันนี้ให้เสร็จก่อน หรือเริ่มงานใหม่เลยครับ']],
+  w:[['error','ข้อผิดพลาด'],['bother','รบกวน'],['make sense','เข้าใจได้/สมเหตุสมผล'],['neither','ไม่ทั้งสอง'],['wonder','สงสัย'],['priority','ลำดับความสำคัญ']],
+  gap:[['Could you ___ me how to run this report?','show',['showing','showed'],'ช่วยสอนวิธีรันรายงานนี้ได้ไหม'],['Would you mind ___ my query?','checking',['check','to check'],'รบกวนช่วยเช็กคิวรีของผมได้ไหม'],['I am not sure what this error ___.','means',['mean','meaning'],'ไม่แน่ใจว่าเออเรอร์นี้หมายถึงอะไร'],['I tried two ways, but ___ of them worked.','neither',['either','both'],'ลองสองวิธี แต่ไม่ได้ทั้งคู่'],['Sorry to ___ you.','bother',['bothering','bothered'],'ขอโทษที่รบกวน']],
+  fix:[['Would you mind to check my query?','Would you mind checking my query?','would you mind ตามด้วย V-ing'],['Could you showing me the file?','Could you show me the file?','could you ตามด้วย V1'],['I don\'t sure what it means.','I am not sure what it means.','sure เป็น adjective ใช้ am not']]},
+ {t:'อัปเดตงานประจำสัปดาห์',c:'#5B6CF0',s:'#3A47B0',m:'📝',lv:'B1',
+  g:'Present Perfect (have/has + V3) ใช้บอกงานที่ "ทำเสร็จแล้ว" โดยไม่บอกเวลาแน่ชัด: I <b>have finished</b> the first report. / I <b>haven\'t tested</b> it yet.',
+  s1:[['This week I have finished two reports.','สัปดาห์นี้ผมทำรายงานเสร็จไปสองชิ้น'],['I haven\'t tested the last part yet.','ผมยังไม่ได้ทดสอบส่วนสุดท้าย'],['I was fixing a bug when the server went down.','ผมกำลังแก้บั๊กอยู่ตอนที่เซิร์ฟเวอร์ล่ม'],['The main problem was the slow query.','ปัญหาหลักคือคิวรีที่ช้า'],['I have already sent the file to my supervisor.','ผมส่งไฟล์ให้หัวหน้าแล้ว'],['Next week I am going to work on the dashboard.','สัปดาห์หน้าผมจะทำแดชบอร์ด'],['It took longer than I expected.','มันใช้เวลานานกว่าที่ผมคาดไว้'],['I learned how to use subreports.','ผมได้เรียนวิธีใช้ซับรีพอร์ต']],
+  w:[['supervisor','หัวหน้างาน/พี่เลี้ยง'],['progress','ความคืบหน้า'],['expect','คาดว่า'],['already','แล้ว (เสร็จแล้ว)'],['yet','ยัง (ใช้กับประโยคปฏิเสธ/คำถาม)'],['dashboard','แดชบอร์ด']],
+  gap:[['I have ___ two reports this week.','finished',['finish','finishing'],'สัปดาห์นี้ทำรายงานเสร็จสองชิ้น'],['I haven\'t tested it ___.','yet',['already','still'],'ยังไม่ได้ทดสอบ'],['I was ___ a bug when the server went down.','fixing',['fixed','fix'],'กำลังแก้บั๊กตอนเซิร์ฟเวอร์ล่ม'],['It took longer than I ___.','expected',['expect','expecting'],'ใช้เวลานานกว่าที่คาด'],['I have ___ sent the file.','already',['yet','ever'],'ส่งไฟล์แล้ว']],
+  fix:[['I have finish the report.','I have finished the report.','have ตามด้วย V3'],['I didn\'t tested it yet.','I haven\'t tested it yet.','yet ใช้กับ present perfect'],['I was fix a bug when it crashed.','I was fixing a bug when it crashed.','was + V-ing = กำลังทำอยู่']]},
+ {t:'ประชุมและแสดงความเห็น',c:'#D97A1E',s:'#94500F',m:'🗣️',lv:'B1',
+  g:'แสดงความเห็นอย่างสุภาพ: <b>In my opinion</b>, … / <b>I think we should</b> … / <b>I see your point, but</b> … / <b>If</b> we have more time, we <b>will</b> …',
+  s1:[['In my opinion, we should test it first.','ผมคิดว่าเราควรทดสอบก่อน'],['I see your point, but it might take too long.','เข้าใจที่พูดครับ แต่อาจจะใช้เวลานานเกินไป'],['If we have more time, we will add a chart.','ถ้ามีเวลามากขึ้น เราจะเพิ่มกราฟ'],['Could you repeat that, please?','ช่วยพูดอีกครั้งได้ไหมครับ'],['I agree with you on this.','ผมเห็นด้วยกับเรื่องนี้'],['Let me add one more thing.','ขอเสริมอีกเรื่องนะครับ'],['What do you think about this idea?','คุณคิดยังไงกับไอเดียนี้'],['So, to sum up, we will finish by Friday.','สรุปคือเราจะทำเสร็จภายในวันศุกร์']],
+  w:[['opinion','ความคิดเห็น'],['agree','เห็นด้วย'],['suggest','เสนอแนะ'],['sum up','สรุป'],['repeat','พูดซ้ำ'],['point','ประเด็น']],
+  gap:[['In my ___, we should test it first.','opinion',['option','opinions'],'ผมคิดว่าเราควรทดสอบก่อน'],['If we have more time, we ___ add a chart.','will',['would','are'],'ถ้ามีเวลาเราจะเพิ่มกราฟ'],['I ___ with you on this.','agree',['am agree','agreed with'],'ผมเห็นด้วย'],['Could you ___ that, please?','repeat',['repeating','repeated'],'ช่วยพูดอีกครั้ง'],['To ___ up, we will finish by Friday.','sum',['some','summary'],'สรุปคือจะเสร็จวันศุกร์']],
+  fix:[['I am agree with you.','I agree with you.','agree เป็นกริยา ไม่ต้องมี am'],['If we will have time, we add a chart.','If we have time, we will add a chart.','if + present, will + V1'],['In my opinion we should to test it.','In my opinion we should test it.','should ตามด้วย V1 ไม่มี to']]},
+ {t:'อีเมลทางการ',c:'#3E8E5A',s:'#245C38',m:'✉️',lv:'B1',
+  g:'อีเมลทางการ: เปิดด้วย <b>Dear</b> …, ใช้ <b>I would like to</b> แทน I want to, ปิดด้วย <b>I look forward to hearing from you.</b> + <b>Best regards</b>',
+  s1:[['I would like to ask for access to the report server.','ผมขอสิทธิ์เข้าใช้เซิร์ฟเวอร์รายงานครับ'],['I am writing to update you on the project.','ผมเขียนมาเพื่ออัปเดตเรื่องโปรเจกต์'],['Please let me know if you need any changes.','ถ้าต้องการแก้ไขอะไร แจ้งได้เลยครับ'],['I have attached the latest version of the report.','ผมแนบรายงานเวอร์ชันล่าสุดมาแล้ว'],['Could we schedule a short meeting next week?','เรานัดประชุมสั้นๆ สัปดาห์หน้าได้ไหมครับ'],['I apologize for the delay.','ขออภัยที่ล่าช้า'],['Thank you for your quick response.','ขอบคุณที่ตอบกลับอย่างรวดเร็ว'],['I look forward to hearing from you.','หวังว่าจะได้รับการตอบกลับ']],
+  w:[['apologize','ขออภัย'],['schedule','นัด/กำหนดเวลา'],['response','การตอบกลับ'],['latest','ล่าสุด'],['look forward to','ตั้งตารอ'],['delay','ความล่าช้า']],
+  gap:[['I would like ___ for access to the server.','to ask',['ask','asking'],'ผมขอสิทธิ์เข้าเซิร์ฟเวอร์'],['I look forward to ___ from you.','hearing',['hear','heard'],'หวังว่าจะได้รับการตอบกลับ'],['I ___ for the delay.','apologize',['sorry','apology'],'ขออภัยที่ล่าช้า'],['I have ___ the latest version.','attached',['attach','attaching'],'แนบเวอร์ชันล่าสุดแล้ว'],['Please let me know ___ you need any changes.','if',['that','what'],'ถ้าต้องการแก้ไขแจ้งได้']],
+  fix:[['I look forward to hear from you.','I look forward to hearing from you.','look forward to ตามด้วย V-ing'],['I would like ask a question.','I would like to ask a question.','would like ตามด้วย to + V1'],['I apologize the delay.','I apologize for the delay.','apologize for + สิ่งที่ขอโทษ']]}
+]);
+function duoPart(u){return u>=5?'ส่วนที่ 2 · B1 ทำงานจริง · หน่วยที่ '+(u-4):'ส่วนที่ 1 · พื้นฐาน · หน่วยที่ '+(u+1);}
+
 var DUO_PLAN=[['lesson','★'],['lesson','★'],['listen','🎧'],['chest','🎁'],['practice','🏋️'],['speak','🎤'],['lesson','★'],['trophy','🏆']];
 var DUO_OFF=[0,-52,-78,-52,0,52,78,52];
 var D={xp:0,gems:500,hearts:5,hAt:0,streak:0,last:'',done:{},days:{}};
@@ -1141,7 +1176,7 @@ function renderPath(){
   var q=Math.min(10,td.xp);
   h+='<div class="dz-quest"><span class="ic" aria-hidden="true">⚡</span><div style="flex:1"><b>ภารกิจวันนี้ · สะสม 10 XP</b><div class="dz-bar"><i style="width:'+(q*10)+'%"></i><span>'+q+' / 10</span></div></div><span style="font-size:28px" aria-hidden="true">'+(q>=10?'🎉':'🧰')+'</span></div>';
   U.forEach(function(un,u){
-    h+='<div class="dz-unit" style="background:'+un.c+'"><div class="t"><small>ส่วนที่ 1 · หน่วยที่ '+(u+1)+'</small><h3>'+esc(un.t)+'</h3></div><button type="button" class="dz-guide" data-guide="'+u+'">📘 คู่มือ</button></div><div class="dz-path">';
+    h+='<div class="dz-unit" style="background:'+un.c+'"><div class="t"><small>'+(l==='en'?duoPart(u):'หน่วยที่ '+(u+1))+'</small><h3>'+esc(un.t)+'</h3></div><button type="button" class="dz-guide" data-guide="'+u+'">📘 คู่มือ</button></div><div class="dz-path">';
     DUO_PLAN.forEach(function(p,i){
       var id=nid(l,u,i),done=!!D.done[id],isCur=cur&&cur.u===u&&cur.i===i,lock=!done&&!isCur;
       var cls='dz-node'+(p[0]==='chest'?' chest'+(done?' open':''):'')+(done&&p[0]!=='chest'?' done':'')+(lock?' lock':'')+(isCur?' cur':'');
@@ -1153,11 +1188,13 @@ function renderPath(){
         (i===2?'<span class="dz-mascot" style="right:12%;top:-10px" aria-hidden="true">'+un.m+'</span>':'')+'</div>';
     });
     h+='</div>';
-    if(u<U.length-1)h+='<div class="dz-div">หน่วยถัดไป</div>';
+    if(u<U.length-1)h+='<div class="dz-div">'+(l==='en'&&u===4?'🚀 ส่วนที่ 2 · B1 ทำงานจริง':'หน่วยถัดไป')+'</div>'+(l==='en'&&u===4&&!D.done['en:5:0']&&!(cur&&cur.u>=5)?'<button type="button" class="dz-guide" id="dzJump" style="margin:4px auto 10px;border-color:var(--line2);color:var(--acc2)">⏩ ข้ามไปเริ่ม B1 เลย</button>':'');
   });
   $('engBody').innerHTML=h;
   $('dzLang').onclick=function(){setLang(l==='es'?'en':'es');S.eMode='quiz';renderEng();};
   $('dzHeart').onclick=function(){if(D.hearts>=5){toastD('หัวใจเต็มแล้ว ❤️');return;}if(D.gems>=50){D.gems-=50;D.hearts=5;D.hAt=Date.now();duoSave();renderPath();toastD('เติมหัวใจเต็มแล้ว (−50 💎)');}else toastD('หัวใจจะเพิ่ม 1 ดวงทุก 30 นาที');};
+  var jb=$('dzJump');if(jb)jb.onclick=function(){if(!S.dzJumpAsk){S.dzJumpAsk=true;jb.textContent='แตะอีกครั้งเพื่อยืนยัน (ส่วนที่ 1 จะนับว่าผ่าน)';setTimeout(function(){S.dzJumpAsk=false;},5000);return;}
+    for(var uu=0;uu<5;uu++)for(var ii=0;ii<DUO_PLAN.length;ii++)D.done[nid('en',uu,ii)]=true;duoSave();S.dzScrolled=false;renderPath();toastD('ข้ามไปส่วนที่ 2 · B1 แล้ว 🚀');};
   $('engBody').querySelectorAll('[data-guide]').forEach(function(b){b.onclick=function(){duoGuide(+b.dataset.guide);};});
   $('engBody').querySelectorAll('[data-node]').forEach(function(b){b.onclick=function(){var a=b.dataset.node.split(','),u=+a[0],i=+a[1],id=nid(l,u,i);
     var c=duoCurrent(l),open=D.done[id]||(c&&c.u===u&&c.i===i);if(!open){toastD('ผ่านบทก่อนหน้าก่อนนะ 🔒');return;}
@@ -1166,7 +1203,7 @@ function renderPath(){
   var curEl=$('engBody').querySelector('.dz-node.cur');if(curEl&&!S.dzScrolled){S.dzScrolled=true;setTimeout(function(){curEl.scrollIntoView({block:'center'});},60);}
 }
 function toastD(t){try{showReply(t);}catch(e){}}
-function duoGuide(u){var un=DUO_UNITS[duoLang()][u];var h='<div class="dl-end" style="padding-top:2vh;align-items:stretch;text-align:left"><h2 style="color:'+un.c+'">📘 '+esc(un.t)+'</h2><div class="k" style="margin-bottom:12px">คำศัพท์และประโยคหลักของหน่วยนี้ · แตะเพื่อฟัง</div>'+
+function duoGuide(u){var un=DUO_UNITS[duoLang()][u];var h='<div class="dl-end" style="padding-top:2vh;align-items:stretch;text-align:left"><h2 style="color:'+un.c+'">📘 '+esc(un.t)+'</h2><div class="k" style="margin-bottom:12px">คำศัพท์และประโยคหลักของหน่วยนี้ · แตะเพื่อฟัง</div>'+(un.g?'<div class="dl-bub" style="margin-bottom:14px;font-size:15px">📖 <b>ไวยากรณ์</b><br>'+un.g+'</div>':'')+
   un.w.concat(un.s1).map(function(x){return '<button type="button" class="dl-c" data-hear="'+esc(x[0])+'" style="margin-bottom:8px"><span style="font-size:18px">🔊</span><span style="flex:1"><b>'+esc(x[0])+'</b><br><span style="color:var(--mut);font-size:14px;font-weight:500">'+esc(x[1])+'</span></span></button>';}).join('')+'</div>';
   duoOpen(h,'<div class="dl-row"><button type="button" class="dl-btn" id="dlClose2">ปิด</button></div>');
   $('dlClose2').onclick=duoClose;$('duoL').querySelectorAll('[data-hear]').forEach(function(b){b.onclick=function(){duoSpeak(b.dataset.hear);};});
@@ -1180,6 +1217,9 @@ function mkEx(type,un,l){
     return {k:type,q:type==='listen'?'แตะคำที่ได้ยิน':'แปลประโยคนี้',prompt:s[1],en:s[0],bank:shuffle(t.concat(extra)),a:t.join(' ')};}
   if(type==='match'){var ps=pick(W,4);return {k:'match',q:'จับคู่คำ',pairs:ps};}
   if(type==='speak'){var sp=pick(S1.filter(function(x){return toks(x[0]).length<=6;}).concat(S1),1)[0];return {k:'speak',q:'พูดประโยคนี้',en:sp[0],th:sp[1]};}
+  if(type==='gap'){if(!un.gap)return mkEx('mc',un,l);var gg=un.gap[Math.floor(Math.random()*un.gap.length)];return {k:'gap',q:'เติมคำในช่องว่าง',prompt:gg[0],th:gg[3],opts:shuffle([gg[1]].concat(gg[2])),a:gg[1]};}
+  if(type==='fix'){if(!un.fix)return mkEx('build',un,l);var fx=un.fix[Math.floor(Math.random()*un.fix.length)];var ct=toks(fx[1]),wt=toks(fx[0]).map(norm);var ex2=toks(fx[0]).filter(function(w){return ct.map(norm).indexOf(norm(w))<0;}).slice(0,3);
+    return {k:'fix',q:'ประโยคนี้ผิด · เรียงประโยคที่ถูกต้อง',prompt:fx[0],en:fx[1],ex:fx[2],bank:shuffle(ct.concat(ex2)),a:ct.join(' ')};}
   if(type==='word'){var w=W[Math.floor(Math.random()*W.length)];var o=shuffle([w[1]].concat(pick(W.filter(function(x){return x!==w;}),2).map(function(x){return x[1];})));return {k:'word',q:'คำนี้แปลว่าอะไร',prompt:w[0],opts:o,a:w[1]};}
 }
 function duoStart(u,i){
@@ -1190,6 +1230,7 @@ function duoStart(u,i){
   else if(t==='practice')plan=['match','mc','build','listen','word','build','speak','mc','match','build'];
   else if(t==='trophy')plan=['build','listen','match','speak','mc','build','listen','word','speak','build'];
   else plan=i===0?['word','word','match','mc','build','word','mc','build']:['mc','build','word','listen','match','build','speak','mc'];
+  if(un.lv==='B1'){plan=t==='listen'?['listen','gap','listen','fix','listen','gap','build','listen']:t==='speak'?['speak','gap','speak','fix','speak','build','speak','gap']:t==='practice'||t==='trophy'?['gap','fix','build','match','gap','listen','fix','mc','gap','build']:['word','gap','mc','fix','build','gap','match','fix'];}
   if(!dict)plan=plan.map(function(x){return x==='speak'?'build':x;});
   DL={u:u,i:i,l:l,un:un,ex:plan.map(function(k){return mkEx(k,un,l);}),n:0,wrong:0,start:Date.now(),retry:[]};
   duoRender();
@@ -1204,8 +1245,14 @@ function duoRender(){
   var e=DL.ex[DL.n],total=DL.ex.length+DL.retry.length,pct=Math.round(DL.n/Math.max(1,DL.ex.length)*100);
   $('dlProg').style.width=pct+'%';$('dlHearts').textContent='❤️ '+D.hearts;
   DL.sel=null;DL.built=[];DL.matched={};DL.mL=null;DL.mR=null;DL.heard='';
-  var b='<div class="dl-kind">'+(e.k==='listen'?'🎧 ฝึกฟัง':e.k==='speak'?'🎤 ฝึกพูด':e.k==='match'?'🧩 จับคู่':e.k==='build'?'✍️ แปลประโยค':'✨ คำศัพท์')+'</div><h2 class="dl-q">'+esc(e.q)+'</h2>';
-  if(e.k==='mc'||e.k==='word'){
+  var b='<div class="dl-kind">'+(e.k==='listen'?'🎧 ฝึกฟัง':e.k==='speak'?'🎤 ฝึกพูด':e.k==='match'?'🧩 จับคู่':e.k==='build'?'✍️ แปลประโยค':e.k==='gap'?'🔤 เติมคำ':e.k==='fix'?'🛠️ แก้ประโยคผิด':'✨ คำศัพท์')+'</div><h2 class="dl-q">'+esc(e.q)+'</h2>';
+  if(e.k==='gap'){
+    b+='<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub" style="font-size:19px"><b>'+esc(e.prompt).replace('___','<span style="display:inline-block;min-width:70px;border-bottom:3px solid #3BA5F5;color:#8FD0FF" id="dlGapV">&nbsp;</span>')+'</b><div style="color:var(--mut);font-size:14px;margin-top:6px">'+esc(e.th)+'</div></div></div><div class="dl-ch">'+
+      e.opts.map(function(o,k){return '<button type="button" class="dl-c" data-opt="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>';}).join('')+'</div>';
+  }else if(e.k==='fix'){
+    b+='<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub"><span style="color:#FF8A8A;text-decoration:line-through;text-decoration-color:rgba(255,90,90,.6)">'+esc(e.prompt)+'</span></div></div>'+
+      '<div class="dl-ans two" id="dlAns"></div><div class="dl-bank" id="dlBank">'+e.bank.map(function(w,k){return '<button type="button" class="dl-w" data-w="'+k+'">'+esc(w)+'</button>';}).join('')+'</div>';
+  }else if(e.k==='mc'||e.k==='word'){
     b+='<div class="dl-say"><span class="dl-av" aria-hidden="true">'+DL.un.m+'</span><div class="dl-bub">'+(e.k==='word'?'<button type="button" class="dl-w" id="dlHear" style="margin-right:6px">🔊</button>':'')+'<b>'+esc(e.prompt)+'</b></div></div><div class="dl-ch">'+
       e.opts.map(function(o,k){return '<button type="button" class="dl-c" data-opt="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>';}).join('')+'</div>';
   }else if(e.k==='build'||e.k==='listen'){
@@ -1224,7 +1271,7 @@ function duoRender(){
   if(e.k==='listen'){setTimeout(function(){duoSpeak(e.en);},250);$('dlPlay').onclick=function(){duoSpeak(e.en);};$('dlSlow').onclick=function(){duoSpeak(e.en,true);};}
   var hb=$('dlHear');if(hb)hb.onclick=function(){duoSpeak(e.prompt&&e.k==='word'?e.prompt:e.en);};
   var body=$('dlBody');
-  body.querySelectorAll('[data-opt]').forEach(function(x){x.onclick=function(){body.querySelectorAll('[data-opt]').forEach(function(y){y.classList.remove('sel');});x.classList.add('sel');DL.sel=e.opts[+x.dataset.opt];$('dlCheck').disabled=false;if(e.k==='mc')duoSpeak(DL.sel);};});
+  body.querySelectorAll('[data-opt]').forEach(function(x){x.onclick=function(){body.querySelectorAll('[data-opt]').forEach(function(y){y.classList.remove('sel');});x.classList.add('sel');DL.sel=e.opts[+x.dataset.opt];$('dlCheck').disabled=false;if(e.k==='mc')duoSpeak(DL.sel);if(e.k==='gap'&&$('dlGapV'))$('dlGapV').textContent=DL.sel;};});
   body.querySelectorAll('[data-w]').forEach(function(x){x.onclick=function(){if(x.classList.contains('used'))return;x.classList.add('used');DL.built.push(+x.dataset.w);duoBuilt(e);duoSpeak(e.bank[+x.dataset.w]);};});
   if(e.k==='match')duoMatchWire(e);
   if(e.k==='speak'){$('dlMic').onclick=function(){duoListen(e);};$('dlSkip').onclick=function(){DL.ex.splice(DL.n,1);if(DL.n>=DL.ex.length)duoFinish();else duoRender();};}
@@ -1251,14 +1298,15 @@ function duoListen(e){var SR=window.SpeechRecognition||window.webkitSpeechRecogn
   try{r.start();}catch(x){$('dlHeard').textContent='เปิดไมค์ไม่ได้';}}
 function duoCheck(e){
   var ok,ans;
-  if(e.k==='mc'||e.k==='word'){ok=DL.sel===e.a;ans=e.a;}
+  if(e.k==='mc'||e.k==='word'||e.k==='gap'){ok=DL.sel===e.a;ans=e.k==='gap'?e.prompt.replace('___',e.a):e.a;}
+  else if(e.k==='fix'){var gf=DL.built.map(function(k){return e.bank[k];}).join(' ');ok=norm(gf)===norm(e.a);ans=e.en;}
   else if(e.k==='build'||e.k==='listen'){var got=DL.built.map(function(k){return e.bank[k];}).join(' ');ok=norm(got)===norm(e.a);ans=e.en+(e.k==='listen'?' · '+e.prompt:'');}
   else if(e.k==='match'){ok=true;ans='';}
   else if(e.k==='speak'){ok=sim(e.en,DL.heard)>=.7;ans=e.en;}
   if(!ok){D.hearts=Math.max(0,D.hearts-1);D.hAt=D.hAt||Date.now();DL.wrong++;DL.ex.push(Object.assign({},e));duoSave();$('dlHearts').textContent='❤️ '+D.hearts;}
   var praise=['เยี่ยมมาก!','ถูกต้อง!','สุดยอด!','เก่งมาก Arm!'];
   $('dlFoot').className='dl-foot '+(ok?'ok':'bad');
-  $('dlFb').innerHTML='<b>'+(ok?'✅ '+praise[Math.floor(Math.random()*praise.length)]:'❌ คำตอบที่ถูก:')+'</b>'+(ans&&!ok?'<div>'+esc(ans)+'</div>':'');
+  $('dlFb').innerHTML='<b>'+(ok?'✅ '+praise[Math.floor(Math.random()*praise.length)]:'❌ คำตอบที่ถูก:')+'</b>'+(ans&&!ok?'<div>'+esc(ans)+'</div>':'')+(e.ex?'<div style="margin-top:4px;opacity:.9">💡 '+esc(e.ex)+'</div>':'');
   $('dlBody').querySelectorAll('button').forEach(function(x){x.disabled=true;});
   var c=$('dlCheck');c.disabled=false;c.textContent=ok?'ไปต่อ':'เข้าใจแล้ว';var sk=$('dlSkip');if(sk)sk.remove();
   if(!ok&&(e.k==='build'||e.k==='listen'||e.k==='speak'))duoSpeak(e.en);
