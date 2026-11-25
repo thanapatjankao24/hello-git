@@ -779,13 +779,13 @@ function kcBody(){return (S.prof&&S.prof.body)||null;}
 function kcTarget(){var b=kcBody();if(!b||!b.w||!b.h||!b.age)return null;
   var bmr=10*b.w+6.25*b.h-5*b.age+(b.sex==='f'?-161:5);var days=FIT.plan&&FIT.plan.days?FIT.plan.days.length:(b.days||3);
   var act=days>=5?1.6:days>=3?1.5:days>=1?1.4:1.25;var g=KC_GOAL[b.goal||'keep']||KC_GOAL.keep;
-  var tdee=Math.round(bmr*act/10)*10,kcal=Math.max(Math.round(bmr*1.1/10)*10,tdee+g[1]);
+  var tdee=Math.round(bmr*act/10)*10,adj=g[1]?Math.sign(g[1])*kcPace(b).k:0,kcal=Math.max(Math.round(bmr*1.1/10)*10,tdee+adj);
   return {bmr:Math.round(bmr),tdee:tdee,kcal:kcal,p:Math.round(b.w*g[2]),goal:g[0]};}
 function kcEaten(){var k=0,p=0,n=0,pend=0;(S.day.food||[]).forEach(function(f){if(typeof f.kcal==='number'){k+=f.kcal;p+=f.p||0;n++;}else pend++;});return {k:k,p:p,n:n,pend:pend};}
 var KC_EDIT=false;
 var FD_TAB='today';
 function fdTab(t){FD_TAB=t;document.querySelectorAll('[data-fd]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.fd===t);});['today','log','goal'].forEach(function(k){$('fd'+k[0].toUpperCase()+k.slice(1)).hidden=k!==t;});}
-document.addEventListener('click',function(e){var kg=e.target.closest&&e.target.closest('[data-kg]');if(kg&&S.prof.body){S.prof.body.goal=kg.dataset.kg;saveProf();renderKGoal();renderKcal();return;}var b=e.target.closest&&e.target.closest('[data-fd]');if(b){fdTab(b.dataset.fd);if(b.dataset.fd==='goal')renderKGoal();}});
+document.addEventListener('click',function(e){var kp=e.target.closest&&e.target.closest('[data-kp]');if(kp&&S.prof.body){S.prof.body.pace=kp.dataset.kp;saveProf();renderKGoal();renderKcal();return;}var kg=e.target.closest&&e.target.closest('[data-kg]');if(kg&&S.prof.body){S.prof.body.goal=kg.dataset.kg;saveProf();renderKGoal();renderKcal();return;}var b=e.target.closest&&e.target.closest('[data-fd]');if(b){fdTab(b.dataset.fd);if(b.dataset.fd==='goal')renderKGoal();}});
 function kcRing(v,col){var r=56,c=2*Math.PI*r,f=Math.max(0,Math.min(1,v));return '<svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true" style="transform:rotate(-90deg)"><circle cx="66" cy="66" r="'+r+'" fill="none" stroke="#25272D" stroke-width="12"/><circle cx="66" cy="66" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+(c*(1-f)).toFixed(1)+'" style="transition:stroke-dashoffset .6s"/></svg>';}
 function renderKcal(){var el=$('kcCard');if(!el)return;var t=kcTarget(),e=kcEaten();
   if(!t){el.innerHTML='<div style="text-align:center;padding:8px 4px"><div style="font-size:36px">🔥</div><b style="font-size:17px">ตั้งค่าร่างกายก่อน</b><div class="k" style="margin:6px 0 14px">กรอกอายุ ส่วนสูง น้ำหนัก แอปจะคำนวณว่าแต่ละวันควรกินเท่าไหร่</div><button type="button" class="btn" data-fd="goal" style="width:100%;min-height:46px">ไปตั้งค่า</button></div>';renderKGoal();return;}
@@ -812,14 +812,20 @@ function renderKGoal(){var el=$('kcGoal');if(!el)return;var t=kcTarget(),b=kcBod
     '<div class="k" style="margin-top:12px;font-size:11px;line-height:1.6">โปรตีนที่ควรได้ ~'+t.p+' g/วัน · คำนวณจากสูตร Mifflin-St Jeor และจำนวนวันออกกำลังกาย · ตัวเลขเป็นค่าประมาณ</div>';
   $('kcEdit').onclick=function(){KC_EDIT=true;renderKGoal();};}
 
-function kcScen(t){var b=kcBody();var keep=t.tdee,gain=t.tdee+400,cut=Math.max(Math.round(t.bmr*1.1/10)*10,t.tdee-400);
+var KC_PACE={slow:{k:250,n:'ช้า',r:'0.25'},normal:{k:500,n:'ปกติ',r:'0.5'},fast:{k:750,n:'เร็ว',r:'0.75'}};
+function kcPace(b){return KC_PACE[(b&&b.pace)||'normal']||KC_PACE.normal;}
+function kcScen(t){var b=kcBody(),P=kcPace(b),floor=Math.round(t.bmr*1.1/10)*10;var keep=t.tdee,gain=t.tdee+P.k,cut=Math.max(floor,t.tdee-P.k);
   function row(ic,lbl,k,sub,on,key){return '<button type="button" data-kg="'+key+'" style="width:100%;text-align:left;color:var(--txt);font:inherit;cursor:pointer;background:transparent;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;'+(on?'background:#1A150B;border:1px solid #4A3814':'border:1px solid var(--line)')+';margin-top:6px"><span style="font-size:18px">'+ic+'</span><span style="flex:1;font-size:13px">'+lbl+'<small style="display:block;color:var(--mut);font-size:11px">'+sub+'</small></span><b style="font-variant-numeric:tabular-nums">'+k.toLocaleString()+'</b><span class="k" style="font-size:11px">kcal/วัน</span>'+(on?'<span style="color:var(--acc);font-size:16px">✓</span>':'')+'</button>';}
-  var g=b.goal||'keep',eta='';
-  if(b.tw&&Math.abs(b.tw-b.w)>=0.5){var diff=b.tw-b.w,rate=diff>0?400:-400,wk=Math.round(Math.abs(diff)*7700/Math.abs(rate)/7);eta='<div class="k" style="margin-top:8px;font-size:12px">🎯 จาก '+b.w+' → '+b.tw+' กก. ถ้ากินตามเป้า '+(diff>0?'เพิ่ม':'ลด')+' ประมาณ '+wk+' สัปดาห์ (~'+(Math.round(wk/4.3*10)/10)+' เดือน)</div>';}
+  var g=b.goal||'keep',eta='',pace='';
+  if(g!=='keep'){pace='<div class="k" style="margin-top:14px;font-size:12px">ความเร็ว</div><div class="fd-seg" style="margin-top:6px">'+Object.keys(KC_PACE).map(function(k){var x=KC_PACE[k];return '<button type="button" data-kp="'+k+'" aria-selected="'+((b.pace||'normal')===k)+'" style="flex-direction:column;min-height:52px;font-size:13px">'+x.n+'<small style="display:block;font-size:11px;font-weight:600;opacity:.8">'+x.r+' กก./สัปดาห์</small></button>';}).join('')+'</div>'+
+    (b.pace==='fast'?'<div class="fp-tip" style="margin-top:8px;font-size:12px">⚡ เร็วได้ แต่ส่วนที่เพิ่มจะเป็นไขมันมากขึ้น '+(g==='gain'?'ต้องเล่นเวทสม่ำเสมอและกินโปรตีนให้ถึง':'อาจหิวและเพลีย ถ้าเวียนหัวให้กลับไปแบบปกติ')+'</div>':'');}
+  if(b.tw&&Math.abs(b.tw-b.w)>=0.5){var diff=b.tw-b.w,daily=diff>0?P.k:Math.max(1,t.tdee-cut),wk=Math.round(Math.abs(diff)*7700/daily/7);
+    var alt=Object.keys(KC_PACE).map(function(k){var d2=diff>0?KC_PACE[k].k:Math.max(1,t.tdee-Math.max(floor,t.tdee-KC_PACE[k].k));return KC_PACE[k].n+' ~'+Math.round(Math.abs(diff)*7700/d2/7)+' สัปดาห์';}).join(' · ');
+    eta='<div style="margin-top:12px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px"><div style="font-size:13px">🎯 '+b.w+' → '+b.tw+' กก. ('+(diff>0?'+':'')+(Math.round(diff*10)/10)+')</div><div style="font-size:22px;font-weight:800;margin-top:4px">~'+wk+' สัปดาห์ <span class="k" style="font-size:13px;font-weight:600">(~'+(Math.round(wk/4.3*10)/10)+' เดือน)</span></div><div class="k" style="font-size:11px;margin-top:4px">'+alt+'</div></div>';}
   return '<div style="margin-top:12px"><div class="k" style="font-size:12px">แตะเพื่อเลือกเป้าหมาย</div>'+
     row('⚖️','คงน้ำหนักนี้',keep,'กินเท่าที่ร่างกายใช้',g==='keep','keep')+
-    row('📈','เพิ่มน้ำหนัก',gain,'+0.3–0.5 กก./สัปดาห์ · กินเกิน ~400',g==='gain','gain')+
-    row('📉','ลดน้ำหนัก',cut,'−0.3–0.5 กก./สัปดาห์ · ไม่ควรต่ำกว่านี้',g==='cut','cut')+eta+'</div>';}
+    row('📈','เพิ่มน้ำหนัก',gain,'+'+P.r+' กก./สัปดาห์ · กินเกิน ~'+P.k,g==='gain','gain')+
+    row('📉','ลดน้ำหนัก',cut,'−'+P.r+' กก./สัปดาห์ · ไม่ต่ำกว่า '+floor.toLocaleString(),g==='cut','cut')+pace+eta+'</div>';}
 var KC_BUSY={};
 async function kcEstimate(f){if(!f||typeof f.kcal==='number'||KC_BUSY[f.at+f.text])return;if(!sample||sampleOff)return;KC_BUSY[f.at+f.text]=1;
   try{var v=await sample.json('ประเมินพลังงานอาหารแบบคนไทยทั่วไป 1 จาน/ที่ ถ้าไม่ระบุปริมาณ: "'+String(f.text).slice(0,80)+'"\nตอบ JSON เท่านั้น: {"kcal":ตัวเลข,"p":โปรตีนกรัม,"note":"ส่วนประกอบหลักสั้นๆ ไม่เกิน 6 คำ"}',{modelTier:'default'});
