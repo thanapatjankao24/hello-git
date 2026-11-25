@@ -167,6 +167,11 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .dl-tile small{display:block;background:var(--c);color:#111;font-weight:800;font-size:12px;padding:5px}
 .dl-tile b{display:block;padding:12px 4px;font-size:20px;color:var(--c)}
 @media (prefers-reduced-motion:reduce){.dz-tip,.dz-node.chest.cur{animation:none}}
+.fp-now{display:grid;grid-template-columns:1.2fr 1fr;gap:8px}
+.fp-now>div{border-radius:16px;padding:12px}.fp-now small{display:block;font-size:11px;color:var(--mut)}.fp-now span{display:block;font-size:11px;color:var(--mut);margin-top:2px}
+.fp-now-l{background:linear-gradient(140deg,#2A1F0B,#15120C);border:1px solid #4A3814}.fp-now-l b{font-size:30px;font-weight:800;color:var(--acc2);font-variant-numeric:tabular-nums}
+.fp-now-r{background:var(--bg);border:1px solid var(--line)}.fp-now-r b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.fp-pick{width:100%;text-align:left;color:var(--txt);font:inherit;cursor:pointer;min-height:56px}.fp-pick:active{transform:scale(.99)}
 .fp-head{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .fp-chip{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px 10px}.fp-chip small{display:block;font-size:11px;color:var(--mut)}
 .fp-chip b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--acc2)}.fp-chip span{font-size:11px;color:var(--mut);margin-left:3px}
@@ -438,7 +443,7 @@ nav .nb[aria-current="page"]{color:var(--acc);font-weight:600}
       <div id="mealRows" style="margin-top:6px"></div>
       <form id="foodForm" style="display:flex;gap:8px;margin-top:12px"><label for="foodIn" class="sr" id="foodLbl">กินอะไร</label><input id="foodIn" type="text" autocomplete="off" placeholder="กินอะไรไป เช่น ข้าวมันไก่"><button type="submit" class="ibtn on" aria-label="บันทึกอาหาร">✓</button></form>
     </div>
-    <div class="card fd-coach"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:22px" aria-hidden="true">🧑‍🍳</span><div style="flex:1"><b style="font-size:15px">ให้โค้ชดูมื้อวันนี้</b><div class="k" style="font-size:12px">เหลืออีกเท่าไหร่ ควรกินอะไรต่อ</div></div><button type="button" class="pill" id="foodAsk" style="min-height:38px">ถามโค้ช</button></div><div id="foodAdvice" style="margin-top:10px;white-space:pre-wrap;line-height:1.7;color:var(--sub);font-size:14px" hidden></div></div>
+    <div class="card fd-coach"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:22px" aria-hidden="true">🧑‍🍳</span><div style="flex:1"><b style="font-size:15px">ว่างแล้ว กินอะไรดี?</b><div class="k" style="font-size:12px">กดตอนที่กินได้ โค้ชบอกว่ามื้อนี้ควรกินเท่าไหร่</div></div><button type="button" class="pill" id="foodAsk" style="min-height:38px">🍽️ กินตอนนี้</button></div><div id="foodAdvice" style="margin-top:10px;white-space:pre-wrap;line-height:1.7;color:var(--sub);font-size:14px" hidden></div></div>
   </div>
   <div id="fdLog" class="fd-p" hidden>
     <div class="card" style="padding:16px"><b style="font-size:16px">📝 วันนี้กินอะไรไปบ้าง</b><div class="k" style="margin:4px 0 12px">พิมพ์รวมทั้งวันได้เลย AI จะแยกเป็นรายการและประเมินแคลอรี่ + โปรตีนให้</div>
@@ -999,18 +1004,30 @@ function fpRender(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace=
   if(d.tip)h+='<div class="fp-tip">💡 '+esc(d.tip)+'</div>';
   el.innerHTML=h;}
 function fpIn(t){var d=t-rMin();if(d<=0)return 'ตอนนี้';return (d>=60?Math.floor(d/60)+' ชม. ':'')+(d%60?d%60+' นาที':'');}
+function fpNow(){var now=rMin(),it=items(),sl=it.filter(function(x){return x.id==='sleep';})[0],bed=sl?hm(sl.time):22*60+30;if(bed<12*60)bed+=24*60;
+  var left=Math.max(0,bed-60-now),ch=left>=7*60?3:left>=3*60?2:1;return {now:now,bed:bed,leftMin:left,chances:ch};}
+function fpRender2(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace='normal';
+  if(!d.target){el.innerHTML='<div class="k">ตั้งค่าร่างกายในแท็บ <b>เป้าหมาย</b> ก่อน โค้ชจะคำนวณให้ได้</div>';return;}
+  if(d.leftK<=80){el.innerHTML='<div class="fp-done">✅ วันนี้กินครบเป้าแล้ว ('+d.eaten.toLocaleString()+' kcal) ไม่ต้องกินเพิ่ม ดื่มน้ำเยอะๆ พอ</div>';return;}
+  var h='<div class="fp-now"><div class="fp-now-l"><small>กินตอนนี้ · '+fmtT(d.t.now)+'</small><b>~'+d.nowK.toLocaleString()+'</b><span>kcal · โปรตีน '+d.nowP+' g</span></div><div class="fp-now-r"><small>เหลือหลังมื้อนี้</small><b>'+Math.max(0,d.leftK-d.nowK).toLocaleString()+'</b><span>kcal · อีก ~'+(d.t.chances-1)+' มื้อ</span></div></div>';
+  if(d.say)h+='<div class="fp-say">'+esc(d.say)+'</div>';
+  h+='<div class="k" style="margin:12px 0 6px;font-size:12px">เลือก 1 อย่าง · แตะเพื่อบันทึกว่ากินแล้ว</div><div class="fp-ms">';
+  if(d.menus&&d.menus.length)h+=d.menus.map(function(m,i){return '<button type="button" class="fp-m fp-pick" data-pick="'+i+'"><span><b style="font-weight:700">'+esc(m.n)+'</b>'+(m.w?'<small style="display:block;color:var(--mut);font-size:12px;margin-top:2px">📍 '+esc(m.w)+'</small>':'')+'</span><em>~'+(+m.k||0)+'<small style="display:block;color:var(--mut);font-weight:600">P '+(+m.p||0)+'g</small></em></button>';}).join('');
+  else if(d.loading)h+='<div class="bf-sk" style="height:52px;margin:0"></div><div class="bf-sk" style="height:52px;margin:0"></div><div class="bf-sk" style="height:52px;margin:0"></div>';
+  h+='</div>';if(d.tip)h+='<div class="fp-tip" style="margin-top:12px">💡 '+esc(d.tip)+'</div>';
+  el.innerHTML=h;
+  el.querySelectorAll('[data-pick]').forEach(function(b){b.onclick=function(){var m=d.menus[+b.dataset.pick];var r=logFood(null,m.n);var f=S.day.food[S.day.food.length-1];if(f){f.kcal=+m.k||0;f.p=+m.p||0;saveDay();}render();toast('บันทึก '+m.n+' แล้ว');};});}
 $('foodAsk').onclick=async function(){
-  var b=this,t=kcTarget(),e=kcEaten(),slots=fpSlots();
-  var d={target:t,leftK:t?t.kcal-e.k:0,leftP:t?t.p-e.p:0,slots:slots,loading:true};
-  if(t){var W=slots.reduce(function(a,x){return a+x.w;},0)||1,lk=Math.max(0,d.leftK),lp=Math.max(0,d.leftP);
-    slots.forEach(function(x){x.kcal=Math.round(lk*x.w/W/10)*10;x.p=Math.round(lp*x.w/W);});}
-  fpRender(d);if(!t||!slots.length)return;
-  if(!sample||sampleOff){d.loading=false;d.tip='เปิด AI ไม่ได้ตอนนี้ ใช้ตัวเลขด้านบนเป็นแนวทางได้';fpRender(d);return;}
-  b.disabled=true;var pd=planDay(S.now.getDay());
-  try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(rMin())+' วันนี้'+(pd?'มีเล่นยิม '+pd.title+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nเหลืออีก '+d.leftK+' kcal โปรตีน '+d.leftP+' g\nมื้อที่เหลือ (เวลา, ชื่อ, เป้า kcal, โปรตีน): '+slots.map(function(x){return fmtT(x.t)+' '+x.name+(x.tag?' ['+x.tag+']':'')+' '+x.kcal+'kcal P'+x.p+'g';}).join(' | ')+
-    '\nแนะนำเมนูไทยที่หาง่ายในร้านทั่วไป/เซเว่น ให้ kcal รวมใกล้เป้าของแต่ละมื้อ\nตอบ JSON เท่านั้น: {"say":"ประโยคทักสั้นๆ เป็นกันเอง ไม่เกิน 20 คำ บอกภาพรวมวันนี้","menus":[[{"n":"ชื่อเมนู + ปริมาณ","k":kcal}, {"n":"...","k":0}]  (1 อาร์เรย์ต่อ 1 มื้อ ตามลำดับ แต่ละมื้อ 2 ตัวเลือก)],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 20 คำ"}',{modelTier:'default'});
-    d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;var ms=(v&&Array.isArray(v.menus))?v.menus:[];slots.forEach(function(x,i){x.menus=(Array.isArray(ms[i])?ms[i]:[]).filter(function(m){return m&&m.n;}).slice(0,2);});fpRender(d);}
-  catch(err){d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดถามโค้ชใหม่อีกครั้ง';fpRender(d);if(err&&err.code==='not_granted')sampleOff=true;}
+  var b=this,t=kcTarget(),e=kcEaten(),tm=fpNow();
+  var d={target:t,eaten:e.k,leftK:t?t.kcal-e.k:0,leftP:t?t.p-e.p:0,t:tm,loading:true};
+  if(t){var share=tm.chances===1?1:Math.min(0.6,1.2/tm.chances);d.nowK=Math.round(Math.max(0,d.leftK)*share/10)*10;d.nowP=Math.round(Math.max(0,d.leftP)*share);}
+  fpRender2(d);if(!t||d.leftK<=80)return;
+  if(!sample||sampleOff){d.loading=false;d.tip='เปิด AI ไม่ได้ตอนนี้ ใช้ตัวเลขด้านบนเป็นแนวทางได้';fpRender2(d);return;}
+  b.disabled=true;var pd=planDay(S.now.getDay()),gym=items().filter(function(x){return x.id==='gym';})[0];
+  var h=Math.floor(tm.now/60),place=h>=8&&h<17?'ช่วงเวลางาน (ฝึกงานในออฟฟิศ หาซื้อได้แถวที่ทำงาน/เซเว่น)':'นอกเวลางาน';
+  try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(tm.now)+' ('+place+') เขาเพิ่งว่างและกินได้ตอนนี้\nวันนี้'+(pd?'มีเล่นยิม '+pd.title+(gym?' เวลา '+gym.time:'')+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nมื้อนี้ควรได้ประมาณ '+d.nowK+' kcal โปรตีน '+d.nowP+' g\nเสนอ 3 ตัวเลือกที่ซื้อกินได้เลยตอนนี้ ปริมาณชัดเจน kcal รวมใกล้ '+d.nowK+' (±15%) ถ้าใกล้เวลายิมให้ย่อยง่าย\nตอบ JSON เท่านั้น: {"say":"ประโยคสั้นเป็นกันเอง ไม่เกิน 18 คำ","menus":[{"n":"เมนู + ปริมาณ","k":kcal,"p":โปรตีนกรัม,"w":"หาซื้อที่ไหน เช่น เซเว่น/ร้านข้าวแกง/ร้านตามสั่ง"}],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 18 คำ"}',{modelTier:'default'});
+    d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;d.menus=((v&&Array.isArray(v.menus))?v.menus:[]).filter(function(m){return m&&m.n;}).slice(0,3);fpRender2(d);}
+  catch(err){d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดใหม่อีกครั้ง';fpRender2(d);if(err&&err.code==='not_granted')sampleOff=true;}
   b.disabled=false;
 };$('fPlan').onclick=function(){FIT.tab='plan';renderFit();};$('fToday').onclick=function(){FIT.tab='today';renderFit();};
 $('fitLog').addEventListener('click',function(e){var b=e.target.closest('[data-fs]');if(b){sayAlways(FIT.chat[+b.dataset.fs].content);}});
