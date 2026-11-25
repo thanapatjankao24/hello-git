@@ -1032,18 +1032,21 @@ function fpRender2(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace
   else if(d.loading)h+='<div class="bf-sk" style="height:52px;margin:0"></div><div class="bf-sk" style="height:52px;margin:0"></div><div class="bf-sk" style="height:52px;margin:0"></div>';
   h+='</div>';if(d.tip)h+='<div class="fp-tip" style="margin-top:12px">💡 '+esc(d.tip)+'</div>';
   el.innerHTML=h;
-  el.querySelectorAll('[data-pick]').forEach(function(b){b.onclick=function(){var m=d.menus[+b.dataset.pick];var r=logFood(null,m.n);var f=S.day.food[S.day.food.length-1];if(f){f.kcal=+m.k||0;f.p=+m.p||0;saveDay();}render();toast('บันทึก '+m.n+' แล้ว');};});}
+  el.querySelectorAll('[data-pick]').forEach(function(b){b.onclick=function(){var m=d.menus[+b.dataset.pick];var r=logFood(null,m.n);var f=S.day.food[S.day.food.length-1];if(f){f.kcal=+m.k||0;f.p=+m.p||0;saveDay();}fpClose();render();toast('บันทึก '+m.n+' แล้ว','ยกเลิก',function(){var i=S.day.food.indexOf(f);if(i>=0)S.day.food.splice(i,1);if(f&&f.meal!=='snack'&&!S.day.food.some(function(y){return y.meal===f.meal;})&&S.day.done)delete S.day.done[f.meal];saveDay();render();toast('ยกเลิกแล้ว');},6000);};});}
+function fpClose(){var el=$('foodAdvice');el.hidden=true;el.innerHTML='';FP_OPEN=false;var b=$('foodAsk');b.innerHTML='🍽️ กินตอนนี้';b.disabled=false;}
+var FP_OPEN=false,FP_RUN=0;
 $('foodAsk').onclick=async function(){
+  if(FP_OPEN){fpClose();return;}FP_OPEN=true;this.innerHTML='✕ ยกเลิก';
   var b=this,t=kcTarget(),e=kcEaten(),tm=fpNow();
   var d={target:t,eaten:e.k,leftK:t?t.kcal-e.k:0,leftP:t?t.p-e.p:0,t:tm,loading:true};
   if(t){var wN=tm.main?3:1,units=wN+tm.futMain*3+tm.futSnack,share=wN/units,lk=Math.max(0,d.leftK),lp=Math.max(0,d.leftP);d.nowK=Math.round(lk*share/10)*10;if(!tm.main)d.nowK=Math.max(Math.min(lk,150),Math.min(d.nowK,450));else d.nowK=Math.min(d.nowK,Math.round(t.kcal*0.4/10)*10);d.nowP=Math.round(lp*Math.min(1,d.nowK/Math.max(1,lk)));}
   fpRender2(d);if(!t||d.leftK<=80)return;
   if(!sample||sampleOff){d.loading=false;d.tip='เปิด AI ไม่ได้ตอนนี้ ใช้ตัวเลขด้านบนเป็นแนวทางได้';fpRender2(d);return;}
-  b.disabled=true;var pd=planDay(S.now.getDay()),gym=items().filter(function(x){return x.id==='gym';})[0];
+  var myRun=FP_RUN=(FP_RUN||0)+1;var pd=planDay(S.now.getDay()),gym=items().filter(function(x){return x.id==='gym';})[0];
   var h=Math.floor(tm.now/60),place=h>=8&&h<17?'ช่วงเวลางาน (ฝึกงานในออฟฟิศ หาซื้อได้แถวที่ทำงาน/เซเว่น)':'นอกเวลางาน';
   try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(tm.now)+' ('+place+') เขาเพิ่งว่างและกินได้ตอนนี้\nมื้อนี้คือ: '+tm.label+(tm.main?' (มื้อหลัก)':' (ของว่างเบาๆ ห้ามเป็นข้าวจาน/ข้าวกล่อง/ก๋วยเตี๋ยว ให้เป็นของว่าง เช่น นม โยเกิร์ต ผลไม้ ขนมปัง ถั่ว ไข่ต้ม)')+'\nกินมื้อเหล่านี้ไปแล้ว: '+(tm.eaten.join(', ')||'ยังไม่มี')+' · หลังจากนี้ยังมีอีก '+tm.futMain+' มื้อหลัก\nวันนี้'+(pd?'มีเล่นยิม '+pd.title+(gym?' เวลา '+gym.time:'')+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nมื้อนี้ควรได้ประมาณ '+d.nowK+' kcal โปรตีน '+d.nowP+' g\nเสนอ 3 ตัวเลือกที่เหมาะกับช่วงเวลานี้ ไม่ซ้ำกับที่กินไปแล้ว ซื้อกินได้เลยตอนนี้ ปริมาณชัดเจน kcal รวมใกล้ '+d.nowK+' (±15%) ถ้าใกล้เวลายิมให้ย่อยง่าย\nตอบ JSON เท่านั้น: {"say":"ประโยคสั้นเป็นกันเอง ไม่เกิน 18 คำ","menus":[{"n":"เมนู + ปริมาณ","k":kcal,"p":โปรตีนกรัม,"w":"หาซื้อที่ไหน เช่น เซเว่น/ร้านข้าวแกง/ร้านตามสั่ง"}],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 18 คำ"}',{modelTier:'default'});
-    d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;d.menus=((v&&Array.isArray(v.menus))?v.menus:[]).filter(function(m){return m&&m.n;}).slice(0,3);fpRender2(d);}
-  catch(err){d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดใหม่อีกครั้ง';fpRender2(d);if(err&&err.code==='not_granted')sampleOff=true;}
+    if(!FP_OPEN||myRun!==FP_RUN)return;d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;d.menus=((v&&Array.isArray(v.menus))?v.menus:[]).filter(function(m){return m&&m.n;}).slice(0,3);fpRender2(d);}
+  catch(err){if(!FP_OPEN||myRun!==FP_RUN)return;d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดใหม่อีกครั้ง';fpRender2(d);if(err&&err.code==='not_granted')sampleOff=true;}
   b.disabled=false;
 };$('fPlan').onclick=function(){FIT.tab='plan';renderFit();};$('fToday').onclick=function(){FIT.tab='today';renderFit();};
 $('fitLog').addEventListener('click',function(e){var b=e.target.closest('[data-fs]');if(b){sayAlways(FIT.chat[+b.dataset.fs].content);}});
