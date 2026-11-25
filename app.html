@@ -1,0 +1,10 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ARB"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0A0A0C">
+<title>ARB</title><style>html,body{margin:0;height:100%;background:#0A0A0C;color:#EDE7DC;font-family:system-ui,sans-serif;display:grid;place-items:center}p{color:#93918C;font-size:14px;text-align:center}</style></head>
+<body><div><div style="font-size:44px;text-align:center">🗡️</div><p id="m">กำลังเปิด ARB เวอร์ชันล่าสุด…</p></div>
+<script>
+(function(){var R='thanapatjankao24/hello-git',go=function(sha){location.replace('https://rawcdn.githack.com/'+R+'/'+sha+'/index.html');};
+var last=null;try{last=localStorage.getItem('arb:sha');}catch(e){}
+var t=setTimeout(function(){if(last)go(last);else document.getElementById('m').textContent='เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง';},6000);
+fetch('https://api.github.com/repos/'+R+'/commits/arb',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}}).then(function(r){return r.json();}).then(function(j){clearTimeout(t);if(j&&j.sha){try{localStorage.setItem('arb:sha',j.sha);}catch(e){}go(j.sha);}else if(last)go(last);}).catch(function(){clearTimeout(t);if(last)go(last);});})();
+</script></body></html>
