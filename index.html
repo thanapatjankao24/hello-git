@@ -167,6 +167,22 @@ h1 small{display:block;font-size:17px;color:var(--mut);font-weight:500}
 .dl-tile small{display:block;background:var(--c);color:#111;font-weight:800;font-size:12px;padding:5px}
 .dl-tile b{display:block;padding:12px 4px;font-size:20px;color:var(--c)}
 @media (prefers-reduced-motion:reduce){.dz-tip,.dz-node.chest.cur{animation:none}}
+.fp-head{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fp-chip{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px 10px}.fp-chip small{display:block;font-size:11px;color:var(--mut)}
+.fp-chip b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--acc2)}.fp-chip span{font-size:11px;color:var(--mut);margin-left:3px}
+.fp-say{margin:12px 0 2px;font-size:14px;line-height:1.6;color:var(--txt)}
+.fp-tl{margin-top:12px;position:relative}.fp-it{display:flex;gap:12px;position:relative;padding-bottom:14px}
+.fp-it:not(:last-child):before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--line2)}
+.fp-dot{width:40px;height:40px;border-radius:50%;background:var(--bg);border:1px solid var(--line2);display:grid;place-items:center;font-size:18px;flex:none}
+.fp-it.now .fp-dot{border-color:var(--acc);box-shadow:0 0 0 4px rgba(217,162,58,.18)}
+.fp-bd{flex:1;min-width:0}.fp-tt{font-size:14px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}.fp-tt b{font-size:16px;font-variant-numeric:tabular-nums}
+.fp-tag{font-size:11px;font-weight:700;color:#9FD49A;background:#121C11;border:1px solid #2F4A2C;border-radius:999px;padding:1px 8px}
+.fp-next{font-size:11px;font-weight:700;color:#141210;background:var(--acc);border-radius:999px;padding:1px 8px}
+.fp-tg{font-size:12px;color:var(--mut);margin-top:2px}
+.fp-ms{display:flex;flex-direction:column;gap:6px;margin-top:8px}.fp-m{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:14px}
+.fp-m span{flex:1}.fp-m em{font-style:normal;font-size:12px;color:var(--acc2);font-weight:700;font-variant-numeric:tabular-nums}
+.fp-tip{margin-top:4px;font-size:13px;color:var(--sub);background:#1A150B;border:1px solid #3D2F14;border-radius:12px;padding:10px 12px;line-height:1.6}
+.fp-done{margin-top:12px;font-size:14px}
 .fd-seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
 .fd-seg button{flex:1;min-height:40px;border:none;border-radius:10px;background:transparent;color:var(--mut);font-size:14px;font-weight:700;cursor:pointer}
 .fd-seg button[aria-selected="true"]{background:var(--acc);color:#141210}
@@ -961,11 +977,40 @@ $('fitTodayBox').addEventListener('click',function(e){
 });
 $('fitPlanBox').addEventListener('click',function(){});
 $('fChat').onclick=function(){FIT.tab='chat';renderFit();};$('fFood').onclick=function(){FIT.tab='food';renderFit();};
+/* ===== coach meal plan: real-time slots + AI menus ===== */
+function rMin(){var d=new Date();return d.getHours()*60+d.getMinutes();}
+function fpSlots(){var now=rMin(),it=items(),sl=it.filter(function(x){return x.id==='sleep';})[0],bed=sl?hm(sl.time):22*60+30;if(bed<12*60)bed+=24*60;
+  var gym=it.filter(function(x){return x.id==='gym';})[0],gymT=gym&&!isDone('gym')?hm(gym.time):null;
+  var eaten={};(S.day.food||[]).forEach(function(f){eaten[f.meal]=1;});
+  var C=[['breakfast','มื้อเช้า','🌅',7*60,3],['lunch','มื้อเที่ยง','☀️',12*60,3],['snack1','ของว่างบ่าย','🍌',15*60+30,1],['dinner','มื้อเย็น','🌙',18*60+30,3],['snack2','ของว่างก่อนนอน','🥛',bed-120,1]];
+  var out=C.filter(function(c){var k=c[0].replace(/\d/,'');if((k==='breakfast'||k==='lunch'||k==='dinner')&&eaten[k])return false;return c[3]>=now+20&&c[3]<=bed-60;});
+  if(!out.length&&now<bed-45)out=[['snack2','มื้อเบาๆ ตอนนี้','🥛',Math.max(now+15,now),1]];
+  return out.map(function(c){var t=c[3],tag='';if(gymT!=null){if(t<gymT&&gymT-t<=150)tag='ก่อนเล่นยิม';else if(t>gymT&&t-gymT<=150)tag='หลังเล่นยิม';}
+    return {k:c[0],name:c[1],ic:c[2],t:t,w:c[4],tag:tag};});}
+function fmtT(m){m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60);}
+function fpRender(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace='normal';
+  if(!d.target){el.innerHTML='<div class="k">ตั้งค่าร่างกายในแท็บ <b>เป้าหมาย</b> ก่อน โค้ชจะคำนวณให้ได้</div>';return;}
+  var h='<div class="fp-head"><div class="fp-chip"><small>เหลืออีก</small><b>'+Math.max(0,d.leftK).toLocaleString()+'</b><span>kcal</span></div><div class="fp-chip"><small>โปรตีนขาด</small><b>'+Math.max(0,d.leftP)+'</b><span>g</span></div><div class="fp-chip"><small>ต้องกินอีก</small><b>'+d.slots.length+'</b><span>มื้อ</span></div></div>';
+  if(d.say)h+='<div class="fp-say">'+esc(d.say)+'</div>';
+  if(!d.slots.length){h+='<div class="fp-done">✅ วันนี้ใกล้เวลานอนแล้ว ไม่ต้องกินเพิ่ม · พรุ่งนี้เริ่มใหม่</div>';}
+  h+='<div class="fp-tl">'+d.slots.map(function(sl,i){var near=i===0;return '<div class="fp-it'+(near?' now':'')+'"><div class="fp-dot">'+sl.ic+'</div><div class="fp-bd"><div class="fp-tt"><b>'+fmtT(sl.t)+'</b> · '+esc(sl.name)+(sl.tag?'<span class="fp-tag">'+esc(sl.tag)+'</span>':'')+(near?'<span class="fp-next">ถัดไป · อีก '+fpIn(sl.t)+'</span>':'')+'</div>'+
+    '<div class="fp-tg">~'+sl.kcal.toLocaleString()+' kcal · โปรตีน '+sl.p+' g</div>'+
+    (sl.menus&&sl.menus.length?'<div class="fp-ms">'+sl.menus.map(function(m){return '<div class="fp-m"><span>'+esc(m.n)+'</span><em>~'+(+m.k||0)+'</em></div>';}).join('')+'</div>':(d.loading?'<div class="fp-ms"><div class="bf-sk" style="height:34px;margin:0"></div></div>':''))+'</div></div>';}).join('')+'</div>';
+  if(d.tip)h+='<div class="fp-tip">💡 '+esc(d.tip)+'</div>';
+  el.innerHTML=h;}
+function fpIn(t){var d=t-rMin();if(d<=0)return 'ตอนนี้';return (d>=60?Math.floor(d/60)+' ชม. ':'')+(d%60?d%60+' นาที':'');}
 $('foodAsk').onclick=async function(){
-  var b=this,f=S.day.food||[];if(!sample||sampleOff){$('foodAdvice').textContent='ต้องใช้ Claude ในการประเมิน ตอนนี้ยังเรียกใช้ไม่ได้';return;}
-  b.disabled=true;$('foodAdvice').hidden=false;$('foodAdvice').textContent='โค้ชกำลังดู…';var pd=planDay(S.now.getDay());
-  try{var r=await sample(COACH_SYS.split('ท้ายคำตอบทุกครั้ง')[0]+'\n\nตอนนี้ '+TH_DAYS[S.now.getDay()]+' '+pad(S.now.getHours())+':'+pad(S.now.getMinutes())+' เป้าหมาย: '+(FIT.plan?FIT.plan.goal:'ยังไม่ได้ตั้ง')+' วันนี้'+(pd?'มีเล่น '+pd.title:'เป็นวันพัก')+(isDone('gym')?' (เล่นเสร็จแล้ว)':'')+'\nมื้อที่กินวันนี้: '+(f.length?f.map(function(x){return x.meal+': '+x.text+' ('+x.at+')';}).join(', '):'ยังไม่ได้บันทึก')+' · ติ๊กว่ากินแล้ว '+mealsDone()+'/3 มื้อ'+(function(){var t=kcTarget(),e=kcEaten();return t?'\nเป้าวันนี้ '+t.kcal+' kcal โปรตีน '+t.p+' g (เป้าหมาย '+t.goal+', ใช้พลังงาน ~'+t.tdee+') · กินแล้วประมาณ '+e.k+' kcal โปรตีน '+e.p+' g · บอกด้วยว่าเหลืออีกกี่ kcal/โปรตีน และมื้อที่เหลือควรกินประมาณเท่าไหร่ พร้อมตัวอย่างเมนูไทย':'';})()+'\n\nประเมินจากอาหารทั้งวันที่กินไปแล้ว ว่าวันนี้กินพอและเหมาะกับเป้าหมายไหม ดูทั้งความครบมื้อ โปรตีน ผักผลไม้ และน้ำ แนะนำมื้อถัดไปหรือของว่าง 1-2 อย่างที่หาง่ายในไทย ตอบภาษาไทย ไม่เกิน 6 บรรทัด ไม่ใช้ markdown ไม่ตำหนิ ไม่แนะนำอดอาหาร',{modelTier:'quick',cache:false,onText:function(o){$('foodAdvice').textContent=o.text;}});
-    $('foodAdvice').textContent=r.text;}catch(e){$('foodAdvice').textContent='ยังประเมินไม่สำเร็จ ลองใหม่อีกครั้ง';if(e&&e.code==='not_granted')sampleOff=true;}
+  var b=this,t=kcTarget(),e=kcEaten(),slots=fpSlots();
+  var d={target:t,leftK:t?t.kcal-e.k:0,leftP:t?t.p-e.p:0,slots:slots,loading:true};
+  if(t){var W=slots.reduce(function(a,x){return a+x.w;},0)||1,lk=Math.max(0,d.leftK),lp=Math.max(0,d.leftP);
+    slots.forEach(function(x){x.kcal=Math.round(lk*x.w/W/10)*10;x.p=Math.round(lp*x.w/W);});}
+  fpRender(d);if(!t||!slots.length)return;
+  if(!sample||sampleOff){d.loading=false;d.tip='เปิด AI ไม่ได้ตอนนี้ ใช้ตัวเลขด้านบนเป็นแนวทางได้';fpRender(d);return;}
+  b.disabled=true;var pd=planDay(S.now.getDay());
+  try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(rMin())+' วันนี้'+(pd?'มีเล่นยิม '+pd.title+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nเหลืออีก '+d.leftK+' kcal โปรตีน '+d.leftP+' g\nมื้อที่เหลือ (เวลา, ชื่อ, เป้า kcal, โปรตีน): '+slots.map(function(x){return fmtT(x.t)+' '+x.name+(x.tag?' ['+x.tag+']':'')+' '+x.kcal+'kcal P'+x.p+'g';}).join(' | ')+
+    '\nแนะนำเมนูไทยที่หาง่ายในร้านทั่วไป/เซเว่น ให้ kcal รวมใกล้เป้าของแต่ละมื้อ\nตอบ JSON เท่านั้น: {"say":"ประโยคทักสั้นๆ เป็นกันเอง ไม่เกิน 20 คำ บอกภาพรวมวันนี้","menus":[[{"n":"ชื่อเมนู + ปริมาณ","k":kcal}, {"n":"...","k":0}]  (1 อาร์เรย์ต่อ 1 มื้อ ตามลำดับ แต่ละมื้อ 2 ตัวเลือก)],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 20 คำ"}',{modelTier:'default'});
+    d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;var ms=(v&&Array.isArray(v.menus))?v.menus:[];slots.forEach(function(x,i){x.menus=(Array.isArray(ms[i])?ms[i]:[]).filter(function(m){return m&&m.n;}).slice(0,2);});fpRender(d);}
+  catch(err){d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดถามโค้ชใหม่อีกครั้ง';fpRender(d);if(err&&err.code==='not_granted')sampleOff=true;}
   b.disabled=false;
 };$('fPlan').onclick=function(){FIT.tab='plan';renderFit();};$('fToday').onclick=function(){FIT.tab='today';renderFit();};
 $('fitLog').addEventListener('click',function(e){var b=e.target.closest('[data-fs]');if(b){sayAlways(FIT.chat[+b.dataset.fs].content);}});
