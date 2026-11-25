@@ -1005,11 +1005,21 @@ function fpRender(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace=
   el.innerHTML=h;}
 function fpIn(t){var d=t-rMin();if(d<=0)return 'ตอนนี้';return (d>=60?Math.floor(d/60)+' ชม. ':'')+(d%60?d%60+' นาที':'');}
 function fpNow(){var now=rMin(),it=items(),sl=it.filter(function(x){return x.id==='sleep';})[0],bed=sl?hm(sl.time):22*60+30;if(bed<12*60)bed+=24*60;
-  var left=Math.max(0,bed-60-now),ch=left>=7*60?3:left>=3*60?2:1;return {now:now,bed:bed,leftMin:left,chances:ch};}
+  var ate={};(S.day.food||[]).forEach(function(f){ate[f.meal]=1;});MEALS.forEach(function(m){if(S.day.done&&S.day.done[m[0]])ate[m[0]]=1;});
+  var W=[['breakfast','มื้อเช้า',5*60,10*60+30],['lunch','มื้อเที่ยง',10*60+30,14*60+30],['snackA','ของว่างบ่าย',14*60+30,17*60],['dinner','มื้อเย็น',17*60,20*60+30],['snackB','ของว่างก่อนนอน',20*60+30,30*60]];
+  var cur=W.filter(function(w){return now>=w[2]&&now<w[3];})[0]||W[4],type,label,main;
+  if(cur[0]==='snackA'&&!ate.lunch){type='lunch';label='มื้อเที่ยง (ช้าหน่อย)';main=true;}
+  else if((cur[0]==='breakfast'||cur[0]==='lunch'||cur[0]==='dinner')&&!ate[cur[0]]){type=cur[0];label=cur[1];main=true;}
+  else if(cur[0]==='snackB'&&!ate.dinner&&now<bed-90){type='dinner';label='มื้อเย็น (ดึกหน่อย)';main=true;}
+  else{type='snack';label=now<10*60+30?'ของว่างเช้า':now<13*60?'ของว่าง':now<17*60?'ของว่างบ่าย':now<20*60+30?'ของว่างเย็น':'ของว่างก่อนนอน';main=false;}
+  var fut=W.filter(function(w){return w[2]>now&&w[2]<bed-60&&(w[0]==='snackA'||w[0]==='snackB'||!ate[w[0]])&&w[0]!==type;});
+  var futMain=fut.filter(function(w){return w[0]!=='snackA'&&w[0]!=='snackB';}).length,futSnack=fut.length-futMain;
+  return {now:now,bed:bed,type:type,label:label,main:main,futMain:futMain,futSnack:Math.min(futSnack,1),eaten:Object.keys(ate)};}
 function fpRender2(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace='normal';
   if(!d.target){el.innerHTML='<div class="k">ตั้งค่าร่างกายในแท็บ <b>เป้าหมาย</b> ก่อน โค้ชจะคำนวณให้ได้</div>';return;}
   if(d.leftK<=80){el.innerHTML='<div class="fp-done">✅ วันนี้กินครบเป้าแล้ว ('+d.eaten.toLocaleString()+' kcal) ไม่ต้องกินเพิ่ม ดื่มน้ำเยอะๆ พอ</div>';return;}
-  var h='<div class="fp-now"><div class="fp-now-l"><small>กินตอนนี้ · '+fmtT(d.t.now)+'</small><b>~'+d.nowK.toLocaleString()+'</b><span>kcal · โปรตีน '+d.nowP+' g</span></div><div class="fp-now-r"><small>เหลือหลังมื้อนี้</small><b>'+Math.max(0,d.leftK-d.nowK).toLocaleString()+'</b><span>kcal · อีก ~'+(d.t.chances-1)+' มื้อ</span></div></div>';
+  var h='<div class="fp-now"><div class="fp-now-l"><small>'+esc(d.t.label)+' · '+fmtT(d.t.now)+'</small><b>~'+d.nowK.toLocaleString()+'</b><span>kcal · โปรตีน '+d.nowP+' g</span></div><div class="fp-now-r"><small>เหลือหลังมื้อนี้</small><b>'+Math.max(0,d.leftK-d.nowK).toLocaleString()+'</b><span>kcal · '+(d.t.futMain?'อีก '+d.t.futMain+' มื้อหลัก':'')+(d.t.futMain&&d.t.futSnack?' + ':'')+(d.t.futSnack?'ของว่าง':'')+(!d.t.futMain&&!d.t.futSnack?'มื้อสุดท้ายของวัน':'')+'</span></div></div>';
+  if(!d.t.futMain&&!d.t.futSnack&&d.leftK-d.nowK>200)h+='<div class="fp-tip" style="margin-top:10px">วันนี้อาจไม่ถึงเป้า ไม่ต้องฝืนกินก่อนนอน พรุ่งนี้เพิ่มมื้อเช้าให้เยอะขึ้นแทน</div>';
   if(d.say)h+='<div class="fp-say">'+esc(d.say)+'</div>';
   h+='<div class="k" style="margin:12px 0 6px;font-size:12px">เลือก 1 อย่าง · แตะเพื่อบันทึกว่ากินแล้ว</div><div class="fp-ms">';
   if(d.menus&&d.menus.length)h+=d.menus.map(function(m,i){return '<button type="button" class="fp-m fp-pick" data-pick="'+i+'"><span><b style="font-weight:700">'+esc(m.n)+'</b>'+(m.w?'<small style="display:block;color:var(--mut);font-size:12px;margin-top:2px">📍 '+esc(m.w)+'</small>':'')+'</span><em>~'+(+m.k||0)+'<small style="display:block;color:var(--mut);font-weight:600">P '+(+m.p||0)+'g</small></em></button>';}).join('');
@@ -1020,12 +1030,12 @@ function fpRender2(d){var el=$('foodAdvice');el.hidden=false;el.style.whiteSpace
 $('foodAsk').onclick=async function(){
   var b=this,t=kcTarget(),e=kcEaten(),tm=fpNow();
   var d={target:t,eaten:e.k,leftK:t?t.kcal-e.k:0,leftP:t?t.p-e.p:0,t:tm,loading:true};
-  if(t){var share=tm.chances===1?1:Math.min(0.6,1.2/tm.chances);d.nowK=Math.round(Math.max(0,d.leftK)*share/10)*10;d.nowP=Math.round(Math.max(0,d.leftP)*share);}
+  if(t){var wN=tm.main?3:1,units=wN+tm.futMain*3+tm.futSnack,share=wN/units,lk=Math.max(0,d.leftK),lp=Math.max(0,d.leftP);d.nowK=Math.round(lk*share/10)*10;if(!tm.main)d.nowK=Math.max(Math.min(lk,150),Math.min(d.nowK,450));else d.nowK=Math.min(d.nowK,Math.round(t.kcal*0.4/10)*10);d.nowP=Math.round(lp*Math.min(1,d.nowK/Math.max(1,lk)));}
   fpRender2(d);if(!t||d.leftK<=80)return;
   if(!sample||sampleOff){d.loading=false;d.tip='เปิด AI ไม่ได้ตอนนี้ ใช้ตัวเลขด้านบนเป็นแนวทางได้';fpRender2(d);return;}
   b.disabled=true;var pd=planDay(S.now.getDay()),gym=items().filter(function(x){return x.id==='gym';})[0];
   var h=Math.floor(tm.now/60),place=h>=8&&h<17?'ช่วงเวลางาน (ฝึกงานในออฟฟิศ หาซื้อได้แถวที่ทำงาน/เซเว่น)':'นอกเวลางาน';
-  try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(tm.now)+' ('+place+') เขาเพิ่งว่างและกินได้ตอนนี้\nวันนี้'+(pd?'มีเล่นยิม '+pd.title+(gym?' เวลา '+gym.time:'')+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nมื้อนี้ควรได้ประมาณ '+d.nowK+' kcal โปรตีน '+d.nowP+' g\nเสนอ 3 ตัวเลือกที่ซื้อกินได้เลยตอนนี้ ปริมาณชัดเจน kcal รวมใกล้ '+d.nowK+' (±15%) ถ้าใกล้เวลายิมให้ย่อยง่าย\nตอบ JSON เท่านั้น: {"say":"ประโยคสั้นเป็นกันเอง ไม่เกิน 18 คำ","menus":[{"n":"เมนู + ปริมาณ","k":kcal,"p":โปรตีนกรัม,"w":"หาซื้อที่ไหน เช่น เซเว่น/ร้านข้าวแกง/ร้านตามสั่ง"}],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 18 คำ"}',{modelTier:'default'});
+  try{var v=await sample.json('คุณคือโค้ชโภชนาการของนักศึกษาฝึกงานไทยอายุราว 20 ปี เป้าหมาย: '+t.goal+'\nตอนนี้ '+fmtT(tm.now)+' ('+place+') เขาเพิ่งว่างและกินได้ตอนนี้\nมื้อนี้คือ: '+tm.label+(tm.main?' (มื้อหลัก)':' (ของว่างเบาๆ ห้ามเป็นข้าวจาน/ข้าวกล่อง/ก๋วยเตี๋ยว ให้เป็นของว่าง เช่น นม โยเกิร์ต ผลไม้ ขนมปัง ถั่ว ไข่ต้ม)')+'\nกินมื้อเหล่านี้ไปแล้ว: '+(tm.eaten.join(', ')||'ยังไม่มี')+' · หลังจากนี้ยังมีอีก '+tm.futMain+' มื้อหลัก\nวันนี้'+(pd?'มีเล่นยิม '+pd.title+(gym?' เวลา '+gym.time:'')+(isDone('gym')?' (เล่นแล้ว)':''):'วันพัก')+'\nกินไปแล้ว: '+((S.day.food||[]).map(function(x){return x.text+' ('+x.at+')';}).join(', ')||'ยังไม่ได้กิน')+'\nมื้อนี้ควรได้ประมาณ '+d.nowK+' kcal โปรตีน '+d.nowP+' g\nเสนอ 3 ตัวเลือกที่เหมาะกับช่วงเวลานี้ ไม่ซ้ำกับที่กินไปแล้ว ซื้อกินได้เลยตอนนี้ ปริมาณชัดเจน kcal รวมใกล้ '+d.nowK+' (±15%) ถ้าใกล้เวลายิมให้ย่อยง่าย\nตอบ JSON เท่านั้น: {"say":"ประโยคสั้นเป็นกันเอง ไม่เกิน 18 คำ","menus":[{"n":"เมนู + ปริมาณ","k":kcal,"p":โปรตีนกรัม,"w":"หาซื้อที่ไหน เช่น เซเว่น/ร้านข้าวแกง/ร้านตามสั่ง"}],"tip":"เคล็ดลับ 1 ประโยค ไม่เกิน 18 คำ"}',{modelTier:'default'});
     d.loading=false;d.say=v&&v.say;d.tip=v&&v.tip;d.menus=((v&&Array.isArray(v.menus))?v.menus:[]).filter(function(m){return m&&m.n;}).slice(0,3);fpRender2(d);}
   catch(err){d.loading=false;d.tip='ยังดึงเมนูแนะนำไม่ได้ ลองกดใหม่อีกครั้ง';fpRender2(d);if(err&&err.code==='not_granted')sampleOff=true;}
   b.disabled=false;
