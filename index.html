@@ -2095,7 +2095,7 @@ async function boot(){
   }
   if(!dict){dict=webDict();if(dict)dictWeb=true;}if(dict)wireDict();
   try{EXT.mcp=C?await C.use('mcp'):null;}catch(e){EXT.mcp=null;}if(EXT.mcp)watchExt();
-  var p=await readDoc('profile');if(p){S.prof.nova=p.nova!==false;S.prof.autos=Object.assign(S.prof.autos,p.autos||{});S.prof.cfg=p.cfg||{};S.prof.hist=p.hist||[];S.prof.requests=p.requests||[];S.prof.safe=!!p.safe;S.prof.stats=p.stats||{};}
+  var p=await readDoc('profile');if(p){S.prof.nova=p.nova!==false;S.prof.autos=Object.assign(S.prof.autos,p.autos||{});S.prof.cfg=p.cfg||{};S.prof.hist=p.hist||[];S.prof.requests=p.requests||[];S.prof.safe=!!p.safe;S.prof.stats=p.stats||{};Object.keys(p).forEach(function(k){if(!(k in S.prof))S.prof[k]=p[k];});if(p.body)S.prof.body=p.body;}
   applyTheme();var dz=await readDoc('duo');if(dz)D=Object.assign(D,dz);var vb=await readDoc('vocab');if(vb){VOC.en=vb.en||{};VOC.es=vb.es||{};}vocQueue=null;
   var fp=await readDoc('fitplan');if(fp&&Array.isArray(fp.days)){FIT.plan=fp;applyPlanDays();}var fg=await readDoc('fitprog');if(fg)FIT.prog=fg;var fl=await readDoc('fitlog');if(fl&&fl.list)FIT.log=fl.list;
   var ad=await readDoc('addons');if(ad&&Array.isArray(ad.list))ADD.list=ad.list;
